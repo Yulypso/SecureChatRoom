@@ -12,7 +12,6 @@ public class ServerChat {
                 if (ServiceChat.clients.size() < NBMAXUSER)
                     new Thread(new ServiceChat(listener.accept())).start();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
