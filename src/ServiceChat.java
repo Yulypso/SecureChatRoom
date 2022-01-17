@@ -40,7 +40,6 @@ public class ServiceChat implements Runnable {
 
     private void register(){
         this.out.println("Welcome!");
-        this.out.print("Connected users: ");
         listClients();
 
         this.out.println("Welcome! Enter your Username: ");
@@ -66,6 +65,7 @@ public class ServiceChat implements Runnable {
     }
 
     private void listClients(){
+        this.out.println("Connected users: ");
         this.out.println("-----------------------------");
         for(Map.Entry<String, PrintWriter> client : clients.entrySet()) {
             String key = client.getKey();
@@ -73,6 +73,20 @@ public class ServiceChat implements Runnable {
         }
         this.out.println();
         this.out.println("-----------------------------");
+    }
+
+    private void privateMessage(String raw) {
+        String[] splitRaw = raw.split(" ");
+
+        System.out.println("debug");
+        System.out.println(splitRaw[0]);
+        System.out.println(splitRaw[1]);
+        System.out.println(splitRaw[2]);
+
+        for(Map.Entry<String, PrintWriter> client : clients.entrySet()) {
+            if (splitRaw[1].equals(client.getKey()))
+                client.getValue().println("[From: " + username + "]" + " " + splitRaw[2]);
+        }
     }
 
     private String commandParser(String text){
@@ -103,9 +117,7 @@ public class ServiceChat implements Runnable {
                             return;
                         }
                         case LIST -> listClients();
-                        case PRIVMSG -> {
-
-                        }
+                        case PRIVMSG -> privateMessage(raw);
                         case MSG -> broadcastMessage(this.username, raw, false);
                     }
                 }
