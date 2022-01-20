@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ServiceChat implements Runnable {
 
@@ -30,7 +31,7 @@ public class ServiceChat implements Runnable {
     private final int NBMAXUSERCONNECTED;
 
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
-    public static final List<Client> registeredClients = new LinkedList<>();
+    public static List<Client> registeredClients = new LinkedList<>();
 
     public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) throws IOException { // User
         this.socket = socket;
@@ -176,7 +177,8 @@ public class ServiceChat implements Runnable {
     private void saveBdd() {
     }
 
-    private void loadBdd(String bddFile) {
+    private void loadBdd(String raw) {
+        String bddFile = "./out/production/secureApp/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;
@@ -185,6 +187,7 @@ public class ServiceChat implements Runnable {
                 String[] splitLine = line.split(":");
                 registeredClients.add(new Client(splitLine[0], splitLine[1]));
             }
+            registeredClients = registeredClients.stream().distinct().collect(Collectors.toList());
             reader.close();
             System.out.println("<SYSTEM> [LOADBDD]: Database loaded, registered " + cpt + " new users");
         } catch (IOException e) {
@@ -269,7 +272,7 @@ public class ServiceChat implements Runnable {
                     case HALT -> haltServer();
                     case DELETEACCOUNT -> deleteAccount();
                     case ADDACCOUNT -> addAccount();
-                    case LOADBDD -> loadBdd("./out/production/secureApp/bdd.txt");
+                    case LOADBDD -> loadBdd(raw);
                     case SAVEBDD -> saveBdd();
                 }
             }
