@@ -8,6 +8,7 @@ public class ServerChat {
     public ServerChat(final int port){
 
         try(ServerSocket listener = new ServerSocket(port)) {
+            new Thread(new ServiceChat(NBMAXUSERCONNECTED)).start();
             while (true) new Thread(new ServiceChat(listener.accept(), NBMAXUSERCONNECTED)).start();
         } catch (IOException e) {
             e.printStackTrace();

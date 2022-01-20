@@ -1,15 +1,18 @@
+import Models.Client;
+
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ServiceChat implements Runnable {
 
-    private final Socket socket;
-    private Scanner in;
-    private PrintWriter out;
+    private Socket socket;
 
     private Client client;
+    private final Scanner in;
 
     private static final String LOGOUT = "LOGOUT";
     private static final String LIST = "LIST";
@@ -22,20 +25,22 @@ public class ServiceChat implements Runnable {
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
     public static final List<Client> registeredClients = new LinkedList<>();
 
-    public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) {
+    public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) throws IOException { // User
         this.socket = socket;
         this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
+        this.in = new Scanner(socket.getInputStream());
+        this.client = new Client(new PrintWriter(socket.getOutputStream(), true), false);
     }
 
-    private void initialisation() throws IOException {
-        this.in = new Scanner(socket.getInputStream());
-        this.out = new PrintWriter(socket.getOutputStream(), true);
-        this.client = new Client(this.out);
+    public ServiceChat(int NBMAXUSERCONNECTED) { // Admin
+        this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
+        this.in = new Scanner(System.in);
+        this.client = new Client(new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true), true);
     }
 
     private boolean userConnectedLimitReachedCheck() throws IOException {
         if (ServiceChat.connectedClients.size() >= NBMAXUSERCONNECTED){
-            this.out.println("<SYSTEM> User connected limit reached");
+            this.client.getOut().println("<SYSTEM> User connected limit reached");
             this.socket.close();
             return true;
         }
@@ -65,8 +70,8 @@ public class ServiceChat implements Runnable {
     }
 
     private void authentication() throws IOException {
-        this.out.println("<SYSTEM> Welcome!");
-        this.out.println("<SYSTEM> Enter your username");
+        this.client.getOut().println("<SYSTEM> Welcome!");
+        this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
 
         if (!usernameExists(username)) {
@@ -77,16 +82,16 @@ public class ServiceChat implements Runnable {
     }
 
     private void register(String username) throws IOException {
-        this.out.println("<SYSTEM> Register");
+        this.client.getOut().println("<SYSTEM> Register");
 
         this.client.setUsername(username);
 
         String password = "";
         String confirmPassword = " ";
         while(!password.equals(confirmPassword)){
-            this.out.println("Enter password: ");
+            this.client.getOut().println("Enter password: ");
             password = this.in.nextLine().trim();
-            this.out.println("Confirm Password: ");
+            this.client.getOut().println("Confirm Password: ");
             confirmPassword = this.in.nextLine().trim();
         }
         this.client.setPassword(password);
@@ -94,38 +99,38 @@ public class ServiceChat implements Runnable {
         registeredClients.add(this.client);
 
         System.out.println("<SYSTEM> " + this.client.getUsername() + " has successfully registered");
-        this.out.println("<SYSTEM> Registration Successful");
+        this.client.getOut().println("<SYSTEM> Registration Successful");
         this.socket.close();
     }
 
     private void login(String username) throws IOException {
 
-        this.out.println("<SYSTEM> Connecting...");
+        this.client.getOut().println("<SYSTEM> Connecting...");
         boolean isLogged = false;
 
         while (!isLogged) {
-            this.out.println("Enter password: ");
+            this.client.getOut().println("Enter password: ");
             String password = this.in.nextLine();
 
             for (Client client : registeredClients) {
                 if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
-                    client.setOut(this.out); // update printwriter
+                    client.setOut(this.client.getOut()); // update printwriter
                     this.client = client;
                     isLogged = true;
                 }
             }
 
             if (!isLogged)
-                this.out.println("<SYSTEM> Username or password is incorrect");
+                this.client.getOut().println("<SYSTEM> Username or password is incorrect");
         }
 
         if(!userConnectedLimitReachedCheck()) {
             if (connectedClients.containsKey(username) && !userConnectedLimitReachedCheck()) {
-                this.out.println("<SYSTEM> User already connected");
+                this.client.getOut().println("<SYSTEM> User already connected");
                 this.socket.close();
             }
 
-            this.out.println("<SYSTEM> Connected as: " + this.client.getUsername());
+            this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
             System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
             broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
 
@@ -138,21 +143,21 @@ public class ServiceChat implements Runnable {
     private void logout() throws IOException {
         connectedClients.remove(this.client.getUsername());
 
-        this.out.println("<SYSTEM> Disconnecting...");
+        this.client.getOut().println("<SYSTEM> Disconnecting...");
         System.out.println("<SYSTEM> " + this.client.getUsername() + " is now disconnected!");
         broadcastMessage("SYSTEM", this.client.getUsername() + " is now disconnected!", true);
         this.socket.close();
     }
 
     private synchronized void listClients(){
-        this.out.println("<SYSTEM> Connected users: ");
-        this.out.println("-----------------------------");
+        this.client.getOut().println("<SYSTEM> Connected users: ");
+        this.client.getOut().println("-----------------------------");
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet()) {
             String key = client.getKey();
-            this.out.print(key + " ");
+            this.client.getOut().print(key + " ");
         }
-        this.out.println();
-        this.out.println("-----------------------------");
+        this.client.getOut().println();
+        this.client.getOut().println("-----------------------------");
     }
 
     private synchronized void privateMessage(String raw) {
@@ -187,9 +192,8 @@ public class ServiceChat implements Runnable {
     @Override
     public void run() {
         try {
-            initialisation();
-
-            authentication();
+            if (!this.client.isAdmin())
+                authentication();
 
             while (true) {
                 if (this.in.hasNextLine()) {
@@ -199,7 +203,8 @@ public class ServiceChat implements Runnable {
 
                     switch (command) {
                         case LOGOUT -> {
-                            logout();
+                            if (!this.client.isAdmin())
+                                logout();
                             return;
                         }
                         case LIST -> listClients();
@@ -208,7 +213,6 @@ public class ServiceChat implements Runnable {
                     }
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,13 +1,22 @@
+package Models;
+
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Client {
 
+    private boolean isAdmin;
     private PrintWriter out;
     private String username;
     private String password;
 
-    public Client(PrintWriter out){
+    public Client(PrintWriter out, boolean isAdmin){
         this.out = out;
+        this.isAdmin = isAdmin;
+
+        if(isAdmin){
+            this.username = "ADMIN";
+        }
     }
 
     public PrintWriter getOut() {
@@ -32,5 +41,13 @@ public class Client {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }
