@@ -21,7 +21,6 @@ public class ServiceChat implements Runnable {
 
     private final int NBMAXUSERCONNECTED;
 
-
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
     public static final List<Client> registeredClients = new LinkedList<>();
 
@@ -106,21 +105,17 @@ public class ServiceChat implements Runnable {
     private void login(String username) throws IOException {
 
         this.client.getOut().println("<SYSTEM> Connecting...");
-        boolean isLogged = false;
+        int isFound = -1;
 
-        while (!isLogged) {
+        while (isFound == -1) {
             this.client.getOut().println("Enter password: ");
             String password = this.in.nextLine();
 
-            for (Client client : registeredClients) {
-                if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
-                    client.setOut(this.client.getOut()); // update printwriter
-                    this.client = client;
-                    isLogged = true;
-                }
-            }
+            for (Client client : registeredClients)
+                if (client.getUsername().equals(username) && client.getPassword().equals(password))
+                    isFound = registeredClients.indexOf(client);
 
-            if (!isLogged)
+            if (isFound == -1)
                 this.client.getOut().println("<SYSTEM> Username or password is incorrect");
         }
 
@@ -128,15 +123,17 @@ public class ServiceChat implements Runnable {
             if (connectedClients.containsKey(username) && !userConnectedLimitReachedCheck()) {
                 this.client.getOut().println("<SYSTEM> User already connected");
                 this.socket.close();
+            } else {
+                registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
+                this.client = registeredClients.get(isFound);
+
+                this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
+                System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
+                broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
+
+                connectedClients.put(this.client.getUsername(), this.client.getOut());
+                listClients();
             }
-
-            this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
-            System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
-            broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
-
-            connectedClients.put(this.client.getUsername(), this.client.getOut());
-
-            listClients();
         }
     }
 
