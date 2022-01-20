@@ -203,9 +203,10 @@ public class ServiceChat implements Runnable {
 
                     switch (command) {
                         case LOGOUT -> {
-                            if (!this.client.isAdmin())
+                            if (!this.client.isAdmin()) {
                                 logout();
-                            return;
+                                return;
+                            }
                         }
                         case LIST -> listClients();
                         case PRIVMSG -> privateMessage(raw);
