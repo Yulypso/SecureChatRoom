@@ -1,4 +1,3 @@
-import javax.naming.InvalidNameException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -17,18 +16,30 @@ public class ServiceChat implements Runnable {
     private static final String PRIVMSG = "PRIVMSG";
     private static final String MSG = "MSG";
 
+    private final int NBMAXUSERCONNECTED;
+
 
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
     public static final List<Client> registeredClients = new LinkedList<>();
 
-    public ServiceChat(Socket socket) {
+    public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) {
         this.socket = socket;
+        this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
     }
 
     private void initialisation() throws IOException {
         this.in = new Scanner(socket.getInputStream());
         this.out = new PrintWriter(socket.getOutputStream(), true);
         this.client = new Client(this.out);
+    }
+
+    private boolean userConnectedLimitReachedCheck() throws IOException {
+        if (ServiceChat.connectedClients.size() >= NBMAXUSERCONNECTED){
+            this.out.println("<SYSTEM> User connected limit reached");
+            this.socket.close();
+            return true;
+        }
+        return false;
     }
 
     private synchronized void broadcastMessage(String username, String msg, boolean system){
@@ -60,9 +71,9 @@ public class ServiceChat implements Runnable {
 
         if (!usernameExists(username)) {
             register(username);
-            logout();
-        } else
+        } else {
             login(username);
+        }
     }
 
     private void register(String username) throws IOException {
@@ -87,34 +98,41 @@ public class ServiceChat implements Runnable {
         this.socket.close();
     }
 
-    private void login(String username){
-        if (!registeredClients.contains(this.client)) { // Must connect
-            this.out.println("<SYSTEM> Connecting...");
+    private void login(String username) throws IOException {
 
-            boolean isLogged = false;
-            while (!isLogged) {
-                this.out.println("Enter password: ");
-                String password = this.in.nextLine();
+        this.out.println("<SYSTEM> Connecting...");
+        boolean isLogged = false;
 
-                for (Client client : registeredClients) {
-                    if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
-                        client.setOut(this.out); // update printwriter
-                        this.client = client;
-                        isLogged = true;
-                    }
+        while (!isLogged) {
+            this.out.println("Enter password: ");
+            String password = this.in.nextLine();
+
+            for (Client client : registeredClients) {
+                if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
+                    client.setOut(this.out); // update printwriter
+                    this.client = client;
+                    isLogged = true;
                 }
-
-                if (!isLogged)
-                    this.out.println("<SYSTEM> Username or password is incorrect");
             }
+
+            if (!isLogged)
+                this.out.println("<SYSTEM> Username or password is incorrect");
         }
 
-        this.out.println("<SYSTEM> Connected as: " + this.client.getUsername());
-        System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
-        this.out.println("-----------------------------");
-        broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
+        if(!userConnectedLimitReachedCheck()) {
+            if (connectedClients.containsKey(username) && !userConnectedLimitReachedCheck()) {
+                this.out.println("<SYSTEM> User already connected");
+                this.socket.close();
+            }
 
-        connectedClients.put(this.client.getUsername(), this.client.getOut());
+            this.out.println("<SYSTEM> Connected as: " + this.client.getUsername());
+            System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
+            broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
+
+            connectedClients.put(this.client.getUsername(), this.client.getOut());
+
+            listClients();
+        }
     }
 
     private void logout() throws IOException {
@@ -122,7 +140,6 @@ public class ServiceChat implements Runnable {
 
         this.out.println("<SYSTEM> Disconnecting...");
         System.out.println("<SYSTEM> " + this.client.getUsername() + " is now disconnected!");
-        this.out.println("-----------------------------");
         broadcastMessage("SYSTEM", this.client.getUsername() + " is now disconnected!", true);
         this.socket.close();
     }
@@ -171,15 +188,16 @@ public class ServiceChat implements Runnable {
     public void run() {
         try {
             initialisation();
+
             authentication();
 
-            while(true) {
+            while (true) {
                 if (this.in.hasNextLine()) {
                     String raw = this.in.nextLine().trim();
                     System.out.println(raw);
                     String command = commandParser(raw);
 
-                    switch (command){
+                    switch (command) {
                         case LOGOUT -> {
                             logout();
                             return;
@@ -190,6 +208,7 @@ public class ServiceChat implements Runnable {
                     }
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

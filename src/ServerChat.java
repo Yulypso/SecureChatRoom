@@ -3,18 +3,12 @@ import java.io.*;
 
 public class ServerChat {
 
-    private final static int NBMAXUSERCONNECTED = 3;
+    private final static int NBMAXUSERCONNECTED = 2;
 
     public ServerChat(final int port){
 
         try(ServerSocket listener = new ServerSocket(port)) {
-            while (true) {
-                Socket s = listener.accept();
-                if (ServiceChat.connectedClients.size() < NBMAXUSERCONNECTED)
-                    new Thread(new ServiceChat(s)).start();
-                else
-                    s.close();
-            }
+            while (true) new Thread(new ServiceChat(listener.accept(), NBMAXUSERCONNECTED)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
