@@ -9,7 +9,6 @@ public class ServiceChat implements Runnable {
     private final Socket socket;
     private Scanner in;
     private PrintWriter out;
-    private String username;
 
     private Client client;
 
@@ -32,7 +31,7 @@ public class ServiceChat implements Runnable {
         this.client = new Client(this.out);
     }
 
-    private void broadcastMessage(String username, String msg, boolean system){
+    private synchronized void broadcastMessage(String username, String msg, boolean system){
         if (system)
             username = "<" + username + ">";
         else
@@ -54,8 +53,20 @@ public class ServiceChat implements Runnable {
         return exist;
     }
 
-    private void register(String username) {
-        this.out.println("Register...");
+    private void authentication() throws IOException {
+        this.out.println("<SYSTEM> Welcome!");
+        this.out.println("<SYSTEM> Enter your username");
+        String username = this.in.nextLine().trim();
+
+        if (!usernameExists(username)) {
+            register(username);
+            logout();
+        } else
+            login(username);
+    }
+
+    private void register(String username) throws IOException {
+        this.out.println("<SYSTEM> Register");
 
         this.client.setUsername(username);
 
@@ -70,11 +81,15 @@ public class ServiceChat implements Runnable {
         this.client.setPassword(password);
 
         registeredClients.add(this.client);
+
+        System.out.println("<SYSTEM> " + this.client.getUsername() + " has successfully registered");
+        this.out.println("<SYSTEM> Registration Successful");
+        this.socket.close();
     }
 
     private void login(String username){
         if (!registeredClients.contains(this.client)) { // Must connect
-            this.out.println("Connecting...");
+            this.out.println("<SYSTEM> Connecting...");
 
             boolean isLogged = false;
             while (!isLogged) {
@@ -90,29 +105,30 @@ public class ServiceChat implements Runnable {
                 }
 
                 if (!isLogged)
-                    this.out.println("[Error]: username or password incorrect. Try again. :)");
+                    this.out.println("<SYSTEM> Username or password is incorrect");
             }
         }
 
-        this.out.println("Connected as: " + this.client.getUsername());
-        System.out.println("<SYSTEM> " + this.client.getUsername() + " is connected!");
+        this.out.println("<SYSTEM> Connected as: " + this.client.getUsername());
+        System.out.println("<SYSTEM> " + this.client.getUsername() + " is now connected!");
         this.out.println("-----------------------------");
-        broadcastMessage("SYSTEM", this.client.getUsername() + " is connected!", true);
+        broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
 
         connectedClients.put(this.client.getUsername(), this.client.getOut());
     }
 
-    private void logout(){
+    private void logout() throws IOException {
         connectedClients.remove(this.client.getUsername());
 
-        this.out.println("Disconnecting...");
-        System.out.println("<SYSTEM> " + this.client.getUsername() + " is disconnected!");
+        this.out.println("<SYSTEM> Disconnecting...");
+        System.out.println("<SYSTEM> " + this.client.getUsername() + " is now disconnected!");
         this.out.println("-----------------------------");
-        broadcastMessage("SYSTEM", this.client.getUsername() + " is disconnected!", true);
+        broadcastMessage("SYSTEM", this.client.getUsername() + " is now disconnected!", true);
+        this.socket.close();
     }
 
-    private void listClients(){
-        this.out.println("Connected users: ");
+    private synchronized void listClients(){
+        this.out.println("<SYSTEM> Connected users: ");
         this.out.println("-----------------------------");
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet()) {
             String key = client.getKey();
@@ -122,10 +138,8 @@ public class ServiceChat implements Runnable {
         this.out.println("-----------------------------");
     }
 
-    private void privateMessage(String raw) {
+    private synchronized void privateMessage(String raw) {
         String[] splitRaw = raw.split(" ");
-
-        System.out.println("debug");
         System.out.println(splitRaw[0]);
         System.out.println(splitRaw[1]);
         System.out.println(splitRaw[2]);
@@ -137,7 +151,6 @@ public class ServiceChat implements Runnable {
     }
 
     private String commandParser(String text){
-
         switch (text.split(" ")[0]) {
             case "/exit", "/logout" -> {
                 return LOGOUT;
@@ -158,13 +171,7 @@ public class ServiceChat implements Runnable {
     public void run() {
         try {
             initialisation();
-
-            this.out.println("Enter your username: ");
-            username = this.in.nextLine().trim();
-
-            if (!usernameExists(username))
-                register(username);
-            login(username);
+            authentication();
 
             while(true) {
                 if (this.in.hasNextLine()) {
@@ -175,7 +182,6 @@ public class ServiceChat implements Runnable {
                     switch (command){
                         case LOGOUT -> {
                             logout();
-                            this.socket.close();
                             return;
                         }
                         case LIST -> listClients();
