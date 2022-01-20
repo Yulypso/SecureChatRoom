@@ -1,6 +1,7 @@
 package Models;
 
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
@@ -9,14 +10,18 @@ public class Client {
     private PrintWriter out;
     private String username;
     private String password;
+    private Socket socket;
 
-    public Client(PrintWriter out, boolean isAdmin){
+    public Client(PrintWriter out, Socket socket){ // User
         this.out = out;
-        this.isAdmin = isAdmin;
+        this.isAdmin = false;
+        this.socket = socket;
+    }
 
-        if(isAdmin){
-            this.username = "ADMIN";
-        }
+    public Client(PrintWriter out){ // Admin
+        this.out = out;
+        this.isAdmin = true;
+        this.username = "ADMIN";
     }
 
     public PrintWriter getOut() {
@@ -49,5 +54,13 @@ public class Client {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 }
