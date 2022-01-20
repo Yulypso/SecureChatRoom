@@ -18,6 +18,12 @@ public class Client {
         this.socket = socket;
     }
 
+    public Client(String username, String password){ // User
+        this.username = username;
+        this.password = password;
+        this.isAdmin = false;
+    }
+
     public Client(PrintWriter out){ // Admin
         this.out = out;
         this.isAdmin = true;

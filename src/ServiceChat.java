@@ -1,8 +1,6 @@
 import Models.Client;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -134,6 +132,7 @@ public class ServiceChat implements Runnable {
                 return;
             } else {
                 registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
+                registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
                 this.client = registeredClients.get(isFound);
 
                 this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
@@ -177,7 +176,20 @@ public class ServiceChat implements Runnable {
     private void saveBdd() {
     }
 
-    private void loadBdd() {
+    private void loadBdd(String bddFile) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(bddFile));
+            String line; int cpt = 0;
+            while ((line = reader.readLine()) != null) {
+                ++cpt;
+                String[] splitLine = line.split(":");
+                registeredClients.add(new Client(splitLine[0], splitLine[1]));
+            }
+            reader.close();
+            System.out.println("<SYSTEM> [LOADBDD]: Database loaded, registered " + cpt + " new users");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addAccount() {
@@ -257,7 +269,7 @@ public class ServiceChat implements Runnable {
                     case HALT -> haltServer();
                     case DELETEACCOUNT -> deleteAccount();
                     case ADDACCOUNT -> addAccount();
-                    case LOADBDD -> loadBdd();
+                    case LOADBDD -> loadBdd("./out/production/secureApp/bdd.txt");
                     case SAVEBDD -> saveBdd();
                 }
             }
