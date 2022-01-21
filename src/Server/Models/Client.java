@@ -1,8 +1,7 @@
-package Models;
+package Server.Models;
 
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Client {
 

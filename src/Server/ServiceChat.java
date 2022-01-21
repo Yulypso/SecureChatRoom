@@ -1,10 +1,12 @@
-import Models.Client;
+package Server;
+
+import Server.Models.Client;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
 public class ServiceChat implements Runnable {
@@ -13,6 +15,7 @@ public class ServiceChat implements Runnable {
 
     private Client client;
     private final Scanner in;
+
 
     /* User commands */
     private static final String LOGOUT = "LOGOUT"; // /logout or /exit
@@ -60,7 +63,7 @@ public class ServiceChat implements Runnable {
         final String x = system ? "<" + username + ">" + " " + msg : "[" + username + "]" + " " + msg;
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet())
             client.getValue().println(x);
-        System.out.println(x);
+        ServerChat.logger.log(Level.INFO, x);
     }
 
     private synchronized boolean usernameExists(String username){
@@ -79,10 +82,14 @@ public class ServiceChat implements Runnable {
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
 
-        if (!usernameExists(username)) {
-            register(username);
+        if(!username.toLowerCase(Locale.ROOT).equals("admin")){
+            if (!usernameExists(username))
+                register(username);
+            else
+                login(username);
         } else {
-            login(username);
+            this.client.setUsername("HACKING DETECTED");
+            logout(this.client);
         }
     }
 
@@ -102,7 +109,7 @@ public class ServiceChat implements Runnable {
 
         registeredClients.add(this.client);
 
-        System.out.println("<SYSTEM> [REGISTER]: Registering " + this.client.getUsername());
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [REGISTER]: Registering " + this.client.getUsername());
         this.client.getOut().println("<SYSTEM> Registration Successful");
         this.socket.close();
     }
@@ -128,16 +135,16 @@ public class ServiceChat implements Runnable {
         if(!userConnectedLimitReachedCheck()) {
             if (connectedClients.containsKey(username)) {
                 this.client.getOut().println("<SYSTEM> User already connected");
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + this.client.getUsername() + " already connected");
                 this.client.getOut().close();
                 this.socket.close();
-                return;
             } else {
                 registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
                 registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
                 this.client = registeredClients.get(isFound);
 
                 this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
-                System.out.println("<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
                 broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
 
                 connectedClients.put(this.client.getUsername(), this.client.getOut());
@@ -150,7 +157,7 @@ public class ServiceChat implements Runnable {
         connectedClients.remove(client.getUsername());
 
         client.getOut().println("<SYSTEM> Disconnecting...");
-        System.out.println("<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
         broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
         client.getOut().close();
         client.getSocket().close();
@@ -164,19 +171,35 @@ public class ServiceChat implements Runnable {
             this.client.getOut().print(key + " ");
         }
         this.client.getOut().println("\n-----------------------------");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LIST] [" + this.client.getUsername() + "]");
     }
 
     private synchronized void privateMessage(String raw) {
         String[] splitRaw = raw.split(" ");
 
-        for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet())
-            if (splitRaw[1].equals(client.getKey()))
-                client.getValue().println("[From: " + this.client.getUsername() + "]" + " " + splitRaw[2]);
+        if(splitRaw.length == 3 && !splitRaw[1].equals(this.client.getUsername())) {
+            for (Client rc: registeredClients) {
+                if (splitRaw[1].equals(rc.getUsername())) {
+                    for (Map.Entry<String, PrintWriter> client : connectedClients.entrySet()) {
+                        if (rc.getUsername().equals(client.getKey())) {
+                            client.getValue().println("[From: " + this.client.getUsername() + "]" + " " + splitRaw[2]);
+                            ServerChat.logger.log(Level.INFO, "<SYSTEM> [PRIVMSG] [" + this.client.getUsername() + " -> " + client.getKey() + "]" + " " + splitRaw[2]);
+                            return;
+                        }
+                    }
+                    this.client.getOut().println("<SYSTEM> [PRIVMSG]: Private message cancelled, " + rc.getUsername() + " is not connected");
+                    return;
+                }
+            }
+        }
+        this.client.getOut().println("<SYSTEM> [PRIVMSG]: Private message cancelled");
     }
 
     private synchronized void saveBdd(String raw) {
-        String bddFile = "./src/Databases/" + raw.split(" ")[1];
+        String bddFile = "./src/Server/Databases/" + raw.split(" ")[1];
         try {
+            new File(bddFile).delete();
+
             BufferedWriter writer = new BufferedWriter(new FileWriter(bddFile));
             int cpt = 0;
             for (Client client: registeredClients) {
@@ -184,14 +207,14 @@ public class ServiceChat implements Runnable {
                 writer.write(client.getUsername() + ":" + client.getPassword() + "\n");
             }
             writer.close();
-            System.out.println("<SYSTEM> [SAVEBDD]: Database saved, saved " + cpt + " new users");
+            ServerChat.logger.log(Level.INFO, "<SYSTEM> [SAVEBDD]: Database saved, saved " + cpt + " new users");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private synchronized void loadBdd(String raw) {
-        String bddFile = "./src/Databases/" + raw.split(" ")[1];
+        String bddFile = "./src/Server/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;
@@ -202,7 +225,8 @@ public class ServiceChat implements Runnable {
             }
             registeredClients = registeredClients.stream().distinct().collect(Collectors.toList());
             reader.close();
-            System.out.println("<SYSTEM> [LOADBDD]: Database loaded, registered " + cpt + " new users");
+            ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOADBDD]: Database loaded, registered " + cpt + " new users");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -212,10 +236,10 @@ public class ServiceChat implements Runnable {
         String[] splitRaw = raw.split(" ");
         Optional<Client> c = registeredClients.stream().filter(cl -> cl.getUsername().equals(splitRaw[1])).findFirst();
         if (c.isPresent())
-            System.out.println("<SYSTEM> [ADDACCOUNT]: Account already exists, user " + splitRaw[1]);
+            ServerChat.logger.log(Level.INFO, "<SYSTEM> [ADDACCOUNT]: Account already exists, user " + splitRaw[1]);
         else {
             registeredClients.add(new Client(splitRaw[1], splitRaw[2]));
-            System.out.println("<SYSTEM> [ADDACCOUNT]: Account added, registered " + splitRaw[1]);
+            ServerChat.logger.log(Level.INFO, "<SYSTEM> [ADDACCOUNT]: Account added, registered " + splitRaw[1]);
         }
     }
 
@@ -227,16 +251,19 @@ public class ServiceChat implements Runnable {
                 if(connectedClients.containsKey(client.getUsername()))
                     logout(client);
                 registeredClients.remove(client);
-                System.out.println("<SYSTEM> [DELETEACCOUNT]: Account deleted, deleted user " + splitRaw[1]);
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [DELETEACCOUNT]: Account deleted, deleted user " + splitRaw[1]);
+
                 return;
             }
         }
-        System.out.println("<SYSTEM> [DELETEACCOUNT]: Account not found, user " + splitRaw[1]);
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [DELETEACCOUNT]: Account not found, user " + splitRaw[1]);
+
     }
 
     private synchronized void haltServer() throws IOException {
         killAll();
-        System.out.println("<SYSTEM> [HALT]: Server halted");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [HALT]: Server halted");
+
         this.client.getOut().close();
         System.exit(0);
     }
@@ -244,14 +271,13 @@ public class ServiceChat implements Runnable {
     private synchronized void killAll() throws IOException {
         int i = 0;
         for (String username: connectedClients.keySet().stream().toList()) {
-            System.out.println("<SYSTEM> [KILLALL]: Disconnecting " + username + " (" + ++i + "/" + connectedClients.size() + ")");
+            ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLALL]: Disconnecting " + username + " (" + ++i + "/" + connectedClients.size() + ")");
+
             Optional<Client> c = registeredClients.stream().filter(cl -> cl.getUsername().equals(username)).findFirst();
-            if (c.isPresent()) {
-                System.out.println(c.get().getUsername());
+            if (c.isPresent())
                 logout(c.get());
-            }
         }
-        System.out.println("<SYSTEM> [KILLALL]: All users are logged out");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLALL]: All users are logged out");
     }
 
     private synchronized void killUser(String raw) throws IOException {
@@ -259,13 +285,14 @@ public class ServiceChat implements Runnable {
 
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet())
             if (splitRaw[1].equals(client.getKey())) {
-                System.out.println("<SYSTEM> [KILLUSER]: Disconnecting " + client.getKey());
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLUSER]: Disconnecting " + client.getKey());
+
                 Optional<Client> c = registeredClients.stream().filter(cl -> cl.getUsername().equals(client.getKey())).findFirst();
                 if(c.isPresent())
                     logout(c.get());
                 return;
             }
-        System.out.println("<SYSTEM> [KILLUSER]: User " + splitRaw[1] + " not found");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLUSER]: User " + splitRaw[1] + " not found");
     }
 
     private String commandParser(String text){
