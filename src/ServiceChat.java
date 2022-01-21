@@ -73,7 +73,7 @@ public class ServiceChat implements Runnable {
         return exist;
     }
 
-    private void authentication() throws IOException {
+    private synchronized void authentication() throws IOException {
         this.client.getOut().println("<SYSTEM> Welcome!");
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
@@ -101,7 +101,7 @@ public class ServiceChat implements Runnable {
 
         registeredClients.add(this.client);
 
-        System.out.println("<SYSTEM> [REGISTER]: " + this.client.getUsername() + " has successfully registered");
+        System.out.println("<SYSTEM> [REGISTER]: Registering " + this.client.getUsername());
         this.client.getOut().println("<SYSTEM> Registration Successful");
         this.socket.close();
     }
@@ -109,7 +109,6 @@ public class ServiceChat implements Runnable {
     private synchronized void login(String username) throws IOException {
         this.client.getOut().println("<SYSTEM> Connecting...");
         int isFound = -1;
-
 
         this.client.getOut().println("Enter password: ");
         String password = this.in.nextLine();
@@ -137,7 +136,7 @@ public class ServiceChat implements Runnable {
                 this.client = registeredClients.get(isFound);
 
                 this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
-                System.out.println("<SYSTEM> [LOGIN]: " + this.client.getUsername() + " is now connected");
+                System.out.println("<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
                 broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
 
                 connectedClients.put(this.client.getUsername(), this.client.getOut());
@@ -150,7 +149,7 @@ public class ServiceChat implements Runnable {
         connectedClients.remove(client.getUsername());
 
         client.getOut().println("<SYSTEM> Disconnecting...");
-        System.out.println("<SYSTEM> [LOGOUT]: " + client.getUsername() + " is now disconnected");
+        System.out.println("<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
         broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
         client.getOut().close();
         client.getSocket().close();
@@ -174,11 +173,24 @@ public class ServiceChat implements Runnable {
                 client.getValue().println("[From: " + this.client.getUsername() + "]" + " " + splitRaw[2]);
     }
 
-    private void saveBdd() {
+    private synchronized void saveBdd(String raw) {
+        String bddFile = "./src/Databases/" + raw.split(" ")[1];
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(bddFile));
+            int cpt = 0;
+            for (Client client: registeredClients) {
+                ++cpt;
+                writer.write(client.getUsername() + ":" + client.getPassword() + "\n");
+            }
+            writer.close();
+            System.out.println("<SYSTEM> [SAVEBDD]: Database saved, saved " + cpt + " new users");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void loadBdd(String raw) {
-        String bddFile = "./out/production/secureApp/Databases/" + raw.split(" ")[1];
+    private synchronized void loadBdd(String raw) {
+        String bddFile = "./src/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;
@@ -195,13 +207,33 @@ public class ServiceChat implements Runnable {
         }
     }
 
-    private void addAccount() {
+    private synchronized void addAccount(String raw) {
+        String[] splitRaw = raw.split(" ");
+        Optional<Client> c = registeredClients.stream().filter(cl -> cl.getUsername().equals(splitRaw[1])).findFirst();
+        if (c.isPresent())
+            System.out.println("<SYSTEM> [ADDACCOUNT]: Account already exists, user " + splitRaw[1]);
+        else {
+            registeredClients.add(new Client(splitRaw[1], splitRaw[2]));
+            System.out.println("<SYSTEM> [ADDACCOUNT]: Account added, registered " + splitRaw[1]);
+        }
     }
 
-    private void deleteAccount() {
+    private synchronized void deleteAccount(String raw) throws IOException {
+        String[] splitRaw = raw.split(" ");
+
+        for (Client client: registeredClients) {
+            if (splitRaw[1].equals(client.getUsername())){
+                if(connectedClients.containsKey(client.getUsername()))
+                    logout(client);
+                registeredClients.remove(client);
+                System.out.println("<SYSTEM> [DELETEACCOUNT]: Account deleted, deleted user " + splitRaw[1]);
+                return;
+            }
+        }
+        System.out.println("<SYSTEM> [DELETEACCOUNT]: Account not found, user " + splitRaw[1]);
     }
 
-    private void haltServer() {
+    private synchronized void haltServer() {
     }
 
     private synchronized void killAll() throws IOException {
@@ -212,7 +244,7 @@ public class ServiceChat implements Runnable {
             if (c.isPresent()) {
                 System.out.println(c.get().getUsername());
                 logout(c.get());
-            } else {System.out.println("not found");}
+            }
         }
         System.out.println("<SYSTEM> [KILLALL]: All users are logged out");
     }
@@ -270,10 +302,10 @@ public class ServiceChat implements Runnable {
                     case KILLUSER -> killUser(raw);
                     case KILLALL -> killAll();
                     case HALT -> haltServer();
-                    case DELETEACCOUNT -> deleteAccount();
-                    case ADDACCOUNT -> addAccount();
+                    case DELETEACCOUNT -> deleteAccount(raw);
+                    case ADDACCOUNT -> addAccount(raw);
                     case LOADBDD -> loadBdd(raw);
-                    case SAVEBDD -> saveBdd();
+                    case SAVEBDD -> saveBdd(raw);
                 }
             }
         } catch (IOException e) {
