@@ -1,6 +1,7 @@
 import Models.Client;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -233,7 +234,11 @@ public class ServiceChat implements Runnable {
         System.out.println("<SYSTEM> [DELETEACCOUNT]: Account not found, user " + splitRaw[1]);
     }
 
-    private synchronized void haltServer() {
+    private synchronized void haltServer() throws IOException {
+        killAll();
+        System.out.println("<SYSTEM> [HALT]: Server halted");
+        this.client.getOut().close();
+        System.exit(0);
     }
 
     private synchronized void killAll() throws IOException {
