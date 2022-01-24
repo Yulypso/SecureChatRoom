@@ -77,20 +77,22 @@ public class ServiceChat implements Runnable {
         return exist;
     }
 
-    private synchronized void authentication() throws IOException {
+    private synchronized boolean authentication() throws IOException {
         this.client.getOut().println("<SYSTEM> Welcome!");
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
 
         if(!username.toLowerCase(Locale.ROOT).equals("admin")){
-            if (!usernameExists(username))
+            if (!usernameExists(username)) {
                 register(username);
-            else
+                return false; // false = register
+            }else
                 login(username);
         } else {
             this.client.setUsername("HACKING DETECTED");
             logout(this.client);
         }
+        return true; // true = login
     }
 
     private synchronized void register(String username) throws IOException {
@@ -316,30 +318,30 @@ public class ServiceChat implements Runnable {
 
         try {
             if (!this.client.isAdmin())
-                authentication();
+                if(authentication()) {
+                    while (this.in.hasNextLine()) {
+                        String raw = this.in.nextLine().trim();
 
-            while (this.in.hasNextLine()) {
-                String raw = this.in.nextLine().trim();
-
-                switch (commandParser(raw)) {
-                    case LOGOUT -> {
-                        if (!this.client.isAdmin()) {
-                            logout(this.client);
-                            return;
+                        switch (commandParser(raw)) {
+                            case LOGOUT -> {
+                                if (!this.client.isAdmin()) {
+                                    logout(this.client);
+                                    return;
+                                }
+                            }
+                            case LIST -> listClients();
+                            case PRIVMSG -> privateMessage(raw);
+                            case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
+                            case KILLUSER -> killUser(raw);
+                            case KILLALL -> killAll();
+                            case HALT -> haltServer();
+                            case DELETEACCOUNT -> deleteAccount(raw);
+                            case ADDACCOUNT -> addAccount(raw);
+                            case LOADBDD -> loadBdd(raw);
+                            case SAVEBDD -> saveBdd(raw);
                         }
                     }
-                    case LIST -> listClients();
-                    case PRIVMSG -> privateMessage(raw);
-                    case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
-                    case KILLUSER -> killUser(raw);
-                    case KILLALL -> killAll();
-                    case HALT -> haltServer();
-                    case DELETEACCOUNT -> deleteAccount(raw);
-                    case ADDACCOUNT -> addAccount(raw);
-                    case LOADBDD -> loadBdd(raw);
-                    case SAVEBDD -> saveBdd(raw);
                 }
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

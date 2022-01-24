@@ -1,24 +1,15 @@
-[21/01/2022 - 23:30:49]: <SYSTEM> ServerChat started
-[21/01/2022 - 23:30:54]: [ADMIN] hi
-[21/01/2022 - 23:30:59]: <SYSTEM> [LIST] [ADMIN]
-[21/01/2022 - 23:31:48]: <SYSTEM> [REGISTER]: Registering a
-[21/01/2022 - 23:31:50]: <SYSTEM> [LOGIN]: Connecting a
-[21/01/2022 - 23:31:50]: <SYSTEM> a is now connected!
-[21/01/2022 - 23:31:50]: <SYSTEM> [LIST] [a]
-[21/01/2022 - 23:33:24]: <SYSTEM> [LOADBDD]: Database loaded, registered 7 new users
-[21/01/2022 - 23:33:27]: <SYSTEM> [LIST] [ADMIN]
-[21/01/2022 - 23:33:39]: <SYSTEM> [LOGIN]: User null already connected
-[21/01/2022 - 23:33:42]: <SYSTEM> [REGISTER]: Registering b
-[21/01/2022 - 23:33:45]: <SYSTEM> [LOGIN]: Connecting b
-[21/01/2022 - 23:33:45]: <SYSTEM> b is now connected!
-[21/01/2022 - 23:33:45]: <SYSTEM> [LIST] [b]
-[21/01/2022 - 23:34:11]: <SYSTEM> [LIST] [b]
-[21/01/2022 - 23:34:26]: <SYSTEM> [KILLALL]: Disconnecting a (1/2)
-[21/01/2022 - 23:34:26]: <SYSTEM> [LOGOUT]: Disconnecting a
-[21/01/2022 - 23:34:26]: <SYSTEM> a is now disconnected!
-[21/01/2022 - 23:34:26]: <SYSTEM> [KILLALL]: Disconnecting b (2/1)
-[21/01/2022 - 23:34:26]: <SYSTEM> [LOGOUT]: Disconnecting b
-[21/01/2022 - 23:34:26]: <SYSTEM> b is now disconnected!
-[21/01/2022 - 23:34:26]: <SYSTEM> [KILLALL]: All users are logged out
-[21/01/2022 - 23:34:31]: <SYSTEM> [KILLALL]: All users are logged out
-[21/01/2022 - 23:34:31]: <SYSTEM> [HALT]: Server halted
+[24/01/2022 - 14:27:28]: <SYSTEM> ServerChat started
+[24/01/2022 - 14:31:44]: <SYSTEM> [REGISTER]: Registering a
+[24/01/2022 - 14:31:46]: <SYSTEM> [LOGIN]: Connecting a
+[24/01/2022 - 14:31:46]: <SYSTEM> a is now connected!
+[24/01/2022 - 14:31:46]: <SYSTEM> [LIST] [a]
+[24/01/2022 - 14:31:46]: [a] a
+[24/01/2022 - 14:31:47]: [a] a
+[24/01/2022 - 14:31:48]: [a] a
+[24/01/2022 - 14:31:48]: [a] a
+[24/01/2022 - 14:31:53]: <SYSTEM> [REGISTER]: Registering b
+[24/01/2022 - 14:31:55]: <SYSTEM> [LOGIN]: Connecting b
+[24/01/2022 - 14:31:55]: <SYSTEM> b is now connected!
+[24/01/2022 - 14:31:55]: <SYSTEM> [LIST] [b]
+[24/01/2022 - 14:31:56]: [b] b
+[24/01/2022 - 14:32:02]: <SYSTEM> [REGISTER]: Registering c
