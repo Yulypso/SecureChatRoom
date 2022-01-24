@@ -1,15 +1,16 @@
-[24/01/2022 - 14:27:28]: <SYSTEM> ServerChat started
-[24/01/2022 - 14:31:44]: <SYSTEM> [REGISTER]: Registering a
-[24/01/2022 - 14:31:46]: <SYSTEM> [LOGIN]: Connecting a
-[24/01/2022 - 14:31:46]: <SYSTEM> a is now connected!
-[24/01/2022 - 14:31:46]: <SYSTEM> [LIST] [a]
-[24/01/2022 - 14:31:46]: [a] a
-[24/01/2022 - 14:31:47]: [a] a
-[24/01/2022 - 14:31:48]: [a] a
-[24/01/2022 - 14:31:48]: [a] a
-[24/01/2022 - 14:31:53]: <SYSTEM> [REGISTER]: Registering b
-[24/01/2022 - 14:31:55]: <SYSTEM> [LOGIN]: Connecting b
-[24/01/2022 - 14:31:55]: <SYSTEM> b is now connected!
-[24/01/2022 - 14:31:55]: <SYSTEM> [LIST] [b]
-[24/01/2022 - 14:31:56]: [b] b
-[24/01/2022 - 14:32:02]: <SYSTEM> [REGISTER]: Registering c
+[24/01/2022 - 23:48:43]: <SYSTEM> ServerChat started
+[24/01/2022 - 23:48:53]: <SYSTEM> [REGISTER]: Registering t
+[24/01/2022 - 23:48:55]: <SYSTEM> [LOGIN]: Connecting t
+[24/01/2022 - 23:48:55]: <SYSTEM> t is now connected!
+[24/01/2022 - 23:48:55]: <SYSTEM> [LIST] [t]
+[24/01/2022 - 23:48:56]: [t] t
+[24/01/2022 - 23:48:56]: [t] 
+[24/01/2022 - 23:48:56]: [t] 
+[24/01/2022 - 23:48:57]: [t] 
+[24/01/2022 - 23:48:57]: [t] 
+[24/01/2022 - 23:48:57]: [t] 
+[24/01/2022 - 23:48:57]: [t] 
+[24/01/2022 - 23:48:58]: [t] hi
+[24/01/2022 - 23:49:01]: [t] aurevoir
+[24/01/2022 - 23:49:02]: <SYSTEM> [LOGOUT]: Disconnecting t
+[24/01/2022 - 23:49:02]: <SYSTEM> t is now disconnected!
