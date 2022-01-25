@@ -16,7 +16,6 @@ public class ServiceChat implements Runnable {
     private Client client;
     private final Scanner in;
 
-
     /* User commands */
     private static final String LOGOUT = "LOGOUT"; // /logout or /exit
     private static final String LIST = "LIST"; // /list
@@ -82,17 +81,20 @@ public class ServiceChat implements Runnable {
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
 
-        if(!username.toLowerCase(Locale.ROOT).equals("admin")){
+        if(!username.toLowerCase(Locale.ROOT).equals("admin")) {
             if (!usernameExists(username)) {
                 register(username);
                 return false; // false = register
-            }else
+            } else {
                 login(username);
+                return true;
+            }
+
         } else {
             this.client.setUsername("HACKING DETECTED");
             logout(this.client);
+            return false;
         }
-        return true; // true = login
     }
 
     private synchronized void register(String username) throws IOException {

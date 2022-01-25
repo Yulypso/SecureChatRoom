@@ -1,10 +1,27 @@
-[25/01/2022 - 11:02:54]: <SYSTEM> ServerChat started
-[25/01/2022 - 11:03:05]: <SYSTEM> [REGISTER]: Registering a
-[25/01/2022 - 11:09:24]: <SYSTEM> [REGISTER]: Registering Thierry
-[25/01/2022 - 11:09:40]: <SYSTEM> [LOGIN]: Connecting a
-[25/01/2022 - 11:09:40]: <SYSTEM> a is now connected!
-[25/01/2022 - 11:09:40]: <SYSTEM> [LIST] [a]
-[25/01/2022 - 11:09:42]: <SYSTEM> [LIST] [a]
-[25/01/2022 - 11:09:48]: [a] hi
-[25/01/2022 - 11:10:45]: <SYSTEM> [REGISTER]: Registering 
-[25/01/2022 - 11:10:49]: <SYSTEM> [LOGIN]: User null already connected
+[25/01/2022 - 12:04:12]: <SYSTEM> ServerChat started
+[25/01/2022 - 12:04:19]: <SYSTEM> [REGISTER]: Registering a
+[25/01/2022 - 12:04:53]: <SYSTEM> [REGISTER]: Registering b
+[25/01/2022 - 12:05:36]: <SYSTEM> [REGISTER]: Registering c
+[25/01/2022 - 12:06:12]: <SYSTEM> [REGISTER]: Registering d
+[25/01/2022 - 12:06:33]: <SYSTEM> [REGISTER]: Registering e
+[25/01/2022 - 12:06:39]: <SYSTEM> [LOGIN]: Connecting e
+[25/01/2022 - 12:06:39]: <SYSTEM> e is now connected!
+[25/01/2022 - 12:06:39]: <SYSTEM> [LIST] [e]
+[25/01/2022 - 12:06:42]: <SYSTEM> [LOGOUT]: Disconnecting e
+[25/01/2022 - 12:06:42]: <SYSTEM> e is now disconnected!
+[25/01/2022 - 12:10:57]: <SYSTEM> [REGISTER]: Registering g
+[25/01/2022 - 12:11:04]: <SYSTEM> [LOGIN]: Connecting g
+[25/01/2022 - 12:11:04]: <SYSTEM> g is now connected!
+[25/01/2022 - 12:11:04]: <SYSTEM> [LIST] [g]
+[25/01/2022 - 12:11:07]: <SYSTEM> [LOGOUT]: Disconnecting g
+[25/01/2022 - 12:11:07]: <SYSTEM> g is now disconnected!
+[25/01/2022 - 12:14:30]: <SYSTEM> [REGISTER]: Registering /sendfile
+[25/01/2022 - 12:16:36]: <SYSTEM> [REGISTER]: Registering /exit
+[25/01/2022 - 12:16:42]: <SYSTEM> [LOGIN]: Connecting /exit
+[25/01/2022 - 12:16:42]: <SYSTEM> /exit is now connected!
+[25/01/2022 - 12:16:42]: <SYSTEM> [LIST] [/exit]
+[25/01/2022 - 12:16:44]: <SYSTEM> [LOGOUT]: Disconnecting /exit
+[25/01/2022 - 12:16:44]: <SYSTEM> /exit is now disconnected!
+[25/01/2022 - 12:16:56]: <SYSTEM> [REGISTER]: Registering t
+[25/01/2022 - 12:17:02]: <SYSTEM> [REGISTER]: Registering y
+[25/01/2022 - 12:17:34]: <SYSTEM> [REGISTER]: Registering u
