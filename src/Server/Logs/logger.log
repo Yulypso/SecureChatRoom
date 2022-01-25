@@ -1,16 +1,10 @@
-[24/01/2022 - 23:48:43]: <SYSTEM> ServerChat started
-[24/01/2022 - 23:48:53]: <SYSTEM> [REGISTER]: Registering t
-[24/01/2022 - 23:48:55]: <SYSTEM> [LOGIN]: Connecting t
-[24/01/2022 - 23:48:55]: <SYSTEM> t is now connected!
-[24/01/2022 - 23:48:55]: <SYSTEM> [LIST] [t]
-[24/01/2022 - 23:48:56]: [t] t
-[24/01/2022 - 23:48:56]: [t] 
-[24/01/2022 - 23:48:56]: [t] 
-[24/01/2022 - 23:48:57]: [t] 
-[24/01/2022 - 23:48:57]: [t] 
-[24/01/2022 - 23:48:57]: [t] 
-[24/01/2022 - 23:48:57]: [t] 
-[24/01/2022 - 23:48:58]: [t] hi
-[24/01/2022 - 23:49:01]: [t] aurevoir
-[24/01/2022 - 23:49:02]: <SYSTEM> [LOGOUT]: Disconnecting t
-[24/01/2022 - 23:49:02]: <SYSTEM> t is now disconnected!
+[25/01/2022 - 11:02:54]: <SYSTEM> ServerChat started
+[25/01/2022 - 11:03:05]: <SYSTEM> [REGISTER]: Registering a
+[25/01/2022 - 11:09:24]: <SYSTEM> [REGISTER]: Registering Thierry
+[25/01/2022 - 11:09:40]: <SYSTEM> [LOGIN]: Connecting a
+[25/01/2022 - 11:09:40]: <SYSTEM> a is now connected!
+[25/01/2022 - 11:09:40]: <SYSTEM> [LIST] [a]
+[25/01/2022 - 11:09:42]: <SYSTEM> [LIST] [a]
+[25/01/2022 - 11:09:48]: [a] hi
+[25/01/2022 - 11:10:45]: <SYSTEM> [REGISTER]: Registering 
+[25/01/2022 - 11:10:49]: <SYSTEM> [LOGIN]: User null already connected
