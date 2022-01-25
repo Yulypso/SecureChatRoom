@@ -1,7 +1,6 @@
-[25/01/2022 - 12:39:55]: <SYSTEM> ServerChat started
-[25/01/2022 - 12:40:07]: <SYSTEM> [REGISTER]: Registering /logout
-[25/01/2022 - 12:40:16]: <SYSTEM> [LOGIN]: Connecting /logout
-[25/01/2022 - 12:40:16]: <SYSTEM> /logout is now connected!
-[25/01/2022 - 12:40:16]: <SYSTEM> [LIST] [/logout]
-[25/01/2022 - 12:40:18]: <SYSTEM> [LOGOUT]: Disconnecting /logout
-[25/01/2022 - 12:40:18]: <SYSTEM> /logout is now disconnected!
+[25/01/2022 - 12:46:04]: <SYSTEM> ServerChat started
+[25/01/2022 - 12:46:09]: <SYSTEM> [REGISTER]: Registering a
+[25/01/2022 - 12:46:13]: <SYSTEM> [LOGIN]: Connecting a
+[25/01/2022 - 12:46:13]: <SYSTEM> a is now connected!
+[25/01/2022 - 12:46:13]: <SYSTEM> [LIST] [a]
+[25/01/2022 - 12:46:18]: <SYSTEM> [LOGIN]: User a already connected

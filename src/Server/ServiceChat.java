@@ -143,7 +143,7 @@ public class ServiceChat implements Runnable {
 
             if (connectedClients.containsKey(username)) {
                 this.client.getOut().println("<SYSTEM> User already connected");
-                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + this.client.getUsername() + " already connected");
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + this.client.getUsername() + " is already connected");
                 this.client.getOut().close();
                 this.socket.close();
             } else {

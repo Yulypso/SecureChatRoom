@@ -30,6 +30,7 @@ public class ClientService extends Thread {
 
     public ClientService(String host, int port) throws IOException {
         initStream(host, port);
+        //TODO: Authentication if log
         start();
         listenConsole();
     }
