@@ -19,10 +19,12 @@ public class ClientService extends Thread {
     private static final String LOGOUT = "LOGOUT"; // /logout or /exit
 
     // Server command
-    private static final String CONNECTED = "CONNECTED"; //
-    private static final String REGISTERED = "REGISTERED"; //
-    private static final String ERR_REGISTERED = "ERR_REGISTERED"; //
-    private static final String DISCONNECTED = "DISCONNECTED"; //
+    private static final String CONNECTED = "CONNECTED";
+    private static final String ALREADYCONNECTED = "ALREADYCONNECTED";
+    private static final String REGISTERED = "REGISTERED";
+    private static final String ERR_REGISTERED = "ERR_REGISTERED";
+    private static final String DISCONNECTED = "DISCONNECTED";
+    private static final String USERLIMITREACHED = "USERLIMITREACHED";
 
     private boolean isClientConnected = false;
 
@@ -32,6 +34,7 @@ public class ClientService extends Thread {
         listenConsole();
     }
 
+    /* Server init & close */
     public void initStream(String host, int port) throws IOException {
         this.inConsole = new Scanner(System.in);
         this.outConsole = new PrintWriter(System.out);
@@ -45,6 +48,18 @@ public class ClientService extends Thread {
         }
     }
 
+    private void closeNetwork() throws IOException {
+        this.outNetwork.close();
+        this.socket.close();
+        System.exit(0);
+    }
+
+    private void closeConsole() throws IOException {
+        this.outConsole.close();
+    }
+    /*********/
+
+    /* Tools */
     private void displayConsole(String raw) {
         this.outConsole.println(raw);
         this.outConsole.flush();
@@ -54,29 +69,17 @@ public class ClientService extends Thread {
         this.outNetwork.println(raw);
         this.outNetwork.flush();
     }
+    /*********/
 
+    /* Features */
     private void sendFile() {
         System.out.println("sending file ...");
     }
 
-    private void closeClient() throws IOException {
-        this.outConsole.close();
-        this.outNetwork.close();
-        this.socket.close();
-        System.exit(0);
-    }
-
-    private void logout() {
+    private void logout() throws IOException {
         sendServer("/logout");
     }
-
-    private String commandParser(String text){
-        switch (text.split(" ")[0].toLowerCase(Locale.ROOT)) {
-            case "/sendfile" -> {return isClientConnected ? SENDFILE : MSG;}
-            case "/exit", "/logout" -> {return isClientConnected ? LOGOUT : MSG;}
-            default -> {return MSG;}
-        }
-    }
+    /*********/
 
     private String serverParser(String text){
         switch (text) {
@@ -84,6 +87,8 @@ public class ClientService extends Thread {
             case "<SYSTEM> Registration Successful" -> {return REGISTERED;}
             case "<SYSTEM> Disconnecting..." -> {return DISCONNECTED;}
             case "<SYSTEM> Username or password is incorrect" -> {return ERR_REGISTERED;}
+            case "<SYSTEM> User connected limit reached" -> {return USERLIMITREACHED;}
+            case "<SYSTEM> User already connected" -> {return ALREADYCONNECTED;}
             default -> {return MSG;}
         }
     }
@@ -94,8 +99,16 @@ public class ClientService extends Thread {
             displayConsole(raw);
             switch(serverParser(raw)) {
                 case CONNECTED -> this.isClientConnected = true;
-                case REGISTERED, ERR_REGISTERED, DISCONNECTED -> closeClient();
+                case REGISTERED, ERR_REGISTERED, DISCONNECTED, USERLIMITREACHED, ALREADYCONNECTED -> {closeConsole(); closeNetwork();}
             }
+        }
+    }
+
+    private String commandParser(String text){
+        switch (text.split(" ")[0].toLowerCase(Locale.ROOT)) {
+            case "/sendfile" -> {return isClientConnected ? SENDFILE : MSG;}
+            case "/exit", "/logout" -> {return isClientConnected ? LOGOUT : MSG;}
+            default -> {return MSG;}
         }
     }
 

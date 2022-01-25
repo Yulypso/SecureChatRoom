@@ -137,16 +137,16 @@ public class ServiceChat implements Runnable {
         }
 
         if(!userConnectedLimitReachedCheck()) {
+            registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
+            registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
+            this.client = registeredClients.get(isFound);
+
             if (connectedClients.containsKey(username)) {
                 this.client.getOut().println("<SYSTEM> User already connected");
                 ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + this.client.getUsername() + " already connected");
                 this.client.getOut().close();
                 this.socket.close();
             } else {
-                registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
-                registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
-                this.client = registeredClients.get(isFound);
-
                 this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
                 ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
                 broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
@@ -319,31 +319,30 @@ public class ServiceChat implements Runnable {
     public void run() {
 
         try {
-            if (!this.client.isAdmin())
-                if(authentication()) {
-                    while (this.in.hasNextLine()) {
-                        String raw = this.in.nextLine().trim();
+            if(this.client.isAdmin() || authentication()) {
+                while (this.in.hasNextLine()) {
+                    String raw = this.in.nextLine().trim();
 
-                        switch (commandParser(raw)) {
-                            case LOGOUT -> {
-                                if (!this.client.isAdmin()) {
-                                    logout(this.client);
-                                    return;
-                                }
+                    switch (commandParser(raw)) {
+                        case LOGOUT -> {
+                            if (!this.client.isAdmin()) {
+                                logout(this.client);
+                                return;
                             }
-                            case LIST -> listClients();
-                            case PRIVMSG -> privateMessage(raw);
-                            case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
-                            case KILLUSER -> killUser(raw);
-                            case KILLALL -> killAll();
-                            case HALT -> haltServer();
-                            case DELETEACCOUNT -> deleteAccount(raw);
-                            case ADDACCOUNT -> addAccount(raw);
-                            case LOADBDD -> loadBdd(raw);
-                            case SAVEBDD -> saveBdd(raw);
                         }
+                        case LIST -> listClients();
+                        case PRIVMSG -> privateMessage(raw);
+                        case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
+                        case KILLUSER -> killUser(raw);
+                        case KILLALL -> killAll();
+                        case HALT -> haltServer();
+                        case DELETEACCOUNT -> deleteAccount(raw);
+                        case ADDACCOUNT -> addAccount(raw);
+                        case LOADBDD -> loadBdd(raw);
+                        case SAVEBDD -> saveBdd(raw);
                     }
                 }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
