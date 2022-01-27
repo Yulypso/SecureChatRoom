@@ -1,6 +1,74 @@
-[25/01/2022 - 12:46:04]: <SYSTEM> ServerChat started
-[25/01/2022 - 12:46:09]: <SYSTEM> [REGISTER]: Registering a
-[25/01/2022 - 12:46:13]: <SYSTEM> [LOGIN]: Connecting a
-[25/01/2022 - 12:46:13]: <SYSTEM> a is now connected!
-[25/01/2022 - 12:46:13]: <SYSTEM> [LIST] [a]
-[25/01/2022 - 12:46:18]: <SYSTEM> [LOGIN]: User a already connected
+[27/01/2022 - 22:04:20]: <SYSTEM> ServerChat started
+[27/01/2022 - 22:05:38]: <SYSTEM> [REGISTER]: Registering a
+[27/01/2022 - 22:05:41]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:05:41]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:05:41]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:05:43]: [a] a
+[27/01/2022 - 22:05:43]: [a] a
+[27/01/2022 - 22:05:47]: [a] /loadfile
+[27/01/2022 - 22:06:04]: [a] /sendfile cafe.png
+[27/01/2022 - 22:06:17]: [a] /sendfile
+[27/01/2022 - 22:06:20]: [a] /sendfile
+[27/01/2022 - 22:06:42]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:06:42]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:06:47]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:06:47]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:06:47]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:06:49]: [a] /sendfile
+[27/01/2022 - 22:07:29]: [ADMIN] /sendfile a
+[27/01/2022 - 22:07:33]: [ADMIN] /sendfile
+[27/01/2022 - 22:07:38]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:07:41]: [a] /send
+[27/01/2022 - 22:07:43]: [a] /sendfile
+[27/01/2022 - 22:07:46]: [a] /sendFile
+[27/01/2022 - 22:08:12]: <SYSTEM> [REGISTER]: Registering b
+[27/01/2022 - 22:08:14]: <SYSTEM> [LOGIN]: Connecting b
+[27/01/2022 - 22:08:14]: <SYSTEM> b is now connected!
+[27/01/2022 - 22:08:14]: <SYSTEM> [LIST] [b]
+[27/01/2022 - 22:08:19]: [b] /sendfile
+[27/01/2022 - 22:08:53]: <SYSTEM> [KILLALL]: Disconnecting a (1/2)
+[27/01/2022 - 22:08:53]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:08:53]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:08:53]: <SYSTEM> [KILLALL]: Disconnecting b (2/1)
+[27/01/2022 - 22:08:53]: <SYSTEM> [LOGOUT]: Disconnecting b
+[27/01/2022 - 22:08:53]: <SYSTEM> b is now disconnected!
+[27/01/2022 - 22:08:53]: <SYSTEM> [KILLALL]: All users are logged out
+[27/01/2022 - 22:08:57]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:08:57]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:08:57]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:09:00]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:09:03]: [a] //
+[27/01/2022 - 22:09:05]: [a] /sendfile
+[27/01/2022 - 22:09:58]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:09:58]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:10:01]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:10:01]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:10:01]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:10:02]: [a] a
+[27/01/2022 - 22:10:05]: [a] /sendfile
+[27/01/2022 - 22:10:29]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:10:29]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:10:38]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:10:38]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:10:38]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:10:41]: [a] /sendfile
+[27/01/2022 - 22:10:42]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:10:42]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:17:37]: <SYSTEM> [REGISTER]: Registering /sendfile
+[27/01/2022 - 22:17:40]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:17:40]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:17:40]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:17:44]: [a] 
+[27/01/2022 - 22:17:48]: <SYSTEM> [LOGOUT]: Disconnecting a
+[27/01/2022 - 22:17:48]: <SYSTEM> a is now disconnected!
+[27/01/2022 - 22:18:18]: <SYSTEM> [LOGIN]: Connecting a
+[27/01/2022 - 22:18:18]: <SYSTEM> a is now connected!
+[27/01/2022 - 22:18:18]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:18:20]: <SYSTEM> [LIST] [a]
+[27/01/2022 - 22:18:22]: [a] 
+[27/01/2022 - 22:18:23]: [a] 
+[27/01/2022 - 22:18:23]: [a] 
+[27/01/2022 - 22:18:27]: [a] hehe
+[27/01/2022 - 22:18:28]: [a] 
+[27/01/2022 - 22:18:28]: [a] 
+[27/01/2022 - 22:18:29]: [a] 

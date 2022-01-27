@@ -75,6 +75,7 @@ public class ClientService extends Thread {
     /* Features */
     private void sendFile() {
         System.out.println("sending file ...");
+
     }
 
     private void logout() throws IOException {
@@ -83,15 +84,20 @@ public class ClientService extends Thread {
     /*********/
 
     private String serverParser(String text){
-        switch (text) {
-            case "<SYSTEM> Connected as:" -> {return CONNECTED;}
-            case "<SYSTEM> Registration Successful" -> {return REGISTERED;}
-            case "<SYSTEM> Disconnecting..." -> {return DISCONNECTED;}
-            case "<SYSTEM> Username or password is incorrect" -> {return ERR_REGISTERED;}
-            case "<SYSTEM> User connected limit reached" -> {return USERLIMITREACHED;}
-            case "<SYSTEM> User already connected" -> {return ALREADYCONNECTED;}
-            default -> {return MSG;}
-        }
+        if(text.startsWith("<SYSTEM> Connected as:"))
+            return CONNECTED;
+        else if(text.startsWith("<SYSTEM> Registration Successful"))
+            return REGISTERED;
+        else if(text.startsWith("<SYSTEM> Disconnecting..."))
+            return DISCONNECTED;
+        else if(text.startsWith("<SYSTEM> Username or password is incorrect"))
+            return ERR_REGISTERED;
+        else if(text.startsWith("<SYSTEM> User connected limit reached"))
+            return USERLIMITREACHED;
+        else if(text.startsWith("<SYSTEM> User already connected"))
+            return ALREADYCONNECTED;
+        else
+            return MSG;
     }
 
     private void listenNetwork() throws IOException {
@@ -117,7 +123,7 @@ public class ClientService extends Thread {
         while(this.inConsole.hasNextLine()){
             String raw = this.inConsole.nextLine().trim();
             switch (commandParser(raw)) {
-                case SENDFILE -> sendFile();
+                case SENDFILE -> {sendFile();}
                 case MSG -> sendServer(raw);
                 case LOGOUT -> logout();
             }
