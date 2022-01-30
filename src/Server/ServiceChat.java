@@ -21,6 +21,7 @@ public class ServiceChat implements Runnable {
     private static final String LIST = "LIST"; // /list
     private static final String PRIVMSG = "PRIVMSG"; // /msg username msg
     private static final String MSG = "MSG"; // msg
+    private static final String SENDFILE = "SENDFILE"; //sendFile username filename
 
     /* Admin commands */
     private static final String KILLUSER = "KILLUSER"; // /kill username
@@ -31,7 +32,12 @@ public class ServiceChat implements Runnable {
     private static final String LOADBDD = "LOADBDD"; // /loadBDD bdd.txt
     private static final String SAVEBDD = "SAVEBDD"; // /saveBDD bdd.txt
 
+    /* States */
+    private static final String ISUSERCONNECTED = "ISUSERCONNECTED";
+
     private final int NBMAXUSERCONNECTED;
+    private boolean fileTransferMode = false;
+    private PrintWriter outRetrievingClient;
 
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
     public static List<Client> registeredClients = new LinkedList<>();
@@ -63,6 +69,19 @@ public class ServiceChat implements Runnable {
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet())
             client.getValue().println(x);
         ServerChat.logger.log(Level.INFO, x);
+    }
+
+    private synchronized void isUserConnected(String raw) {
+        String[] splitRaw = raw.split(" ");
+        boolean isfound = false;
+        for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet()){
+            if (splitRaw[3].equals(retrievingClient.getKey())) {
+                this.client.getOut().println("<SYSTEM> [SENDFILE]: User is connected: " + splitRaw[3] + " " + splitRaw[4]);
+                isfound = true;
+            }
+        }
+        if(!isfound)
+            this.client.getOut().println("<SYSTEM> [SENDFILE]: User is not connected");
     }
 
     private synchronized boolean usernameExists(String username){
@@ -137,16 +156,16 @@ public class ServiceChat implements Runnable {
         }
 
         if(!userConnectedLimitReachedCheck()) {
-            registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
-            registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
-            this.client = registeredClients.get(isFound);
-
             if (connectedClients.containsKey(username)) {
                 this.client.getOut().println("<SYSTEM> User already connected");
                 ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + this.client.getUsername() + " is already connected");
                 this.client.getOut().close();
                 this.socket.close();
             } else {
+                registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
+                registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
+                this.client = registeredClients.get(isFound);
+
                 this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
                 ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
                 broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
@@ -299,19 +318,57 @@ public class ServiceChat implements Runnable {
         ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLUSER]: User " + splitRaw[1] + " not found");
     }
 
+    private synchronized void sendFile(String raw) {
+        if(!fileTransferMode) {
+            String[] splitRaw = raw.split(" ");
+
+            boolean userFound = false;
+            for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet()) {
+                if (splitRaw[1].equals(retrievingClient.getKey())) {
+                    userFound = true;
+                    ServerChat.logger.log(Level.INFO, "<SYSTEM> [SENDFILE] [" + this.client.getUsername() + "]: Sending " + splitRaw[2] + " to user " + retrievingClient.getKey());
+                    this.client.getOut().println("<SYSTEM> [SENDFILE]: Sending " + splitRaw[2] + " to user: " + retrievingClient.getKey());
+                    this.outRetrievingClient = retrievingClient.getValue();
+                    this.outRetrievingClient.println("<SYSTEM> [SENDFILE]: SENDFILESTART: Retrieving " + splitRaw[2] + " from " + this.client.getUsername());
+                    this.fileTransferMode = true;
+                    break;
+                }
+            }
+            if(!userFound){
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [SENDFILE] [" + this.client.getUsername() + "]: Sending failed, User: " + splitRaw[1] + " is not connected");
+                this.fileTransferMode = false;
+                this.client.getOut().println("<SYSTEM> [SENDFILE]: Sending failed, User: " + splitRaw[1] + " is not connected");
+            }
+        } else {
+            if (raw.equals("<SYSTEM> [SENDFILE]: SENDFILESTOP")){
+                this.outRetrievingClient.println("<SYSTEM> [SENDFILE]: SENDFILESTOP");
+                this.client.getOut().println("<SYSTEM> [SENDFILE]: File Sent");
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [SENDFILE] [" + this.client.getUsername() + "]: File Sent");
+                this.fileTransferMode = false;
+            } else {
+                this.outRetrievingClient.println(raw);
+            }
+        }
+    }
+
     private String commandParser(String text){
-        switch (text.split(" ")[0].toLowerCase(Locale.ROOT)) {
-            case "/exit", "/logout" -> {return LOGOUT;}
-            case "/list" -> {return LIST;}
-            case "/msg" -> {return PRIVMSG;}
-            case "/kill" -> {return this.client.isAdmin() ? KILLUSER : MSG;}
-            case "/killall" ->{return this.client.isAdmin() ? KILLALL : MSG;}
-            case "/halt" ->{return this.client.isAdmin() ? HALT : MSG;}
-            case "/deleteaccount"->{return this.client.isAdmin() ? DELETEACCOUNT : MSG;}
-            case "/addaccount"->{return this.client.isAdmin() ? ADDACCOUNT : MSG;}
-            case "/loadbdd"->{return this.client.isAdmin() ? LOADBDD : MSG;}
-            case "/savebdd"->{return this.client.isAdmin() ? SAVEBDD : MSG;}
-            default -> {return MSG;}
+        if(text.startsWith("<SYSTEM> [SENDFILE]: ISUSERCONNECTED"))
+            return ISUSERCONNECTED;
+        else{
+            switch (text.split(" ")[0].toLowerCase(Locale.ROOT)) {
+                case "/exit", "/logout" -> {return LOGOUT;}
+                case "/list" -> {return LIST;}
+                case "/msg" -> {return PRIVMSG;}
+                case "/sendfile"->{return this.client.isAdmin() ? MSG : SENDFILE;}
+                case "/kill" -> {return this.client.isAdmin() ? KILLUSER : MSG;}
+                case "/killall" ->{return this.client.isAdmin() ? KILLALL : MSG;}
+                case "/halt" ->{return this.client.isAdmin() ? HALT : MSG;}
+                case "/deleteaccount"->{return this.client.isAdmin() ? DELETEACCOUNT : MSG;}
+                case "/addaccount"->{return this.client.isAdmin() ? ADDACCOUNT : MSG;}
+                case "/loadbdd"->{return this.client.isAdmin() ? LOADBDD : MSG;}
+                case "/savebdd"->{return this.client.isAdmin() ? SAVEBDD : MSG;}
+                default -> {return MSG;}
+            }
         }
     }
 
@@ -323,23 +380,29 @@ public class ServiceChat implements Runnable {
                 while (this.in.hasNextLine()) {
                     String raw = this.in.nextLine().trim();
 
-                    switch (commandParser(raw)) {
-                        case LOGOUT -> {
-                            if (!this.client.isAdmin()) {
-                                logout(this.client);
-                                return;
+                    if(fileTransferMode)
+                        sendFile(raw);
+                    else {
+                        switch (commandParser(raw)) {
+                            case LOGOUT -> {
+                                if (!this.client.isAdmin()) {
+                                    logout(this.client);
+                                    return;
+                                }
                             }
+                            case LIST -> listClients();
+                            case PRIVMSG -> privateMessage(raw);
+                            case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
+                            case KILLUSER -> killUser(raw);
+                            case KILLALL -> killAll();
+                            case HALT -> haltServer();
+                            case DELETEACCOUNT -> deleteAccount(raw);
+                            case ADDACCOUNT -> addAccount(raw);
+                            case LOADBDD -> loadBdd(raw);
+                            case SAVEBDD -> saveBdd(raw);
+                            case SENDFILE -> sendFile(raw);
+                            case ISUSERCONNECTED -> isUserConnected(raw);
                         }
-                        case LIST -> listClients();
-                        case PRIVMSG -> privateMessage(raw);
-                        case MSG -> broadcastMessage(this.client.getUsername(), raw, false);
-                        case KILLUSER -> killUser(raw);
-                        case KILLALL -> killAll();
-                        case HALT -> haltServer();
-                        case DELETEACCOUNT -> deleteAccount(raw);
-                        case ADDACCOUNT -> addAccount(raw);
-                        case LOADBDD -> loadBdd(raw);
-                        case SAVEBDD -> saveBdd(raw);
                     }
                 }
             }

@@ -8,7 +8,7 @@ import java.util.logging.*;
 
 public class ServerChat {
 
-    private final static int NBMAXUSERCONNECTED = 2;
+    private final static int NBMAXUSERCONNECTED = 3;
     protected static boolean runServer = true;
     public static final Logger logger = Logger.getLogger(ServiceChat.class.getSimpleName());
 
