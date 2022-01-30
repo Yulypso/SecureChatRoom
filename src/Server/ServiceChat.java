@@ -76,7 +76,7 @@ public class ServiceChat implements Runnable {
         boolean isfound = false;
         for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet()){
             if (splitRaw[3].equals(retrievingClient.getKey())) {
-                this.client.getOut().println("<SYSTEM> [SENDFILE]: User is connected: " + splitRaw[3] + " " + splitRaw[4]);
+                this.client.getOut().println("<SYSTEM> [SENDFILE]: User is connected: " + splitRaw[3] + " sending: " + splitRaw[4]);
                 isfound = true;
             }
         }

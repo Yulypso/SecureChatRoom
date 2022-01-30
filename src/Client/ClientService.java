@@ -100,7 +100,7 @@ public class ClientService extends Thread {
         } else {
             if (this.isReceiverConnected) {
                 String[] splitRaw = raw.split(" ");
-                raw = "/sendfile " + splitRaw[5] + " " + splitRaw[6];
+                raw = "/sendfile " + splitRaw[5] + " " + splitRaw[7];
                 splitRaw = raw.split(" ");
 
                 if (splitRaw.length == 3) {
@@ -110,15 +110,16 @@ public class ClientService extends Thread {
                         displayConsole("<SYSTEM> [SENDFILE]: File doesn't exist");
                     } else {
                         sendServer("/sendfile " + splitRaw[1] + " " + splitRaw[2]);
+
+                        FileInputStream fin = new FileInputStream(f);
+                        int by = 0;
+                        while ((by = fin.read()) != -1) {
+                            sendServer(String.valueOf(by));
+                        }
+
+                        sendServer("<SYSTEM> [SENDFILE]: " + SENDFILESTOP);
                     }
 
-                    FileInputStream fin = new FileInputStream(f);
-                    int by = 0;
-                    while ((by = fin.read()) != -1) {
-                        sendServer(String.valueOf(by));
-                    }
-
-                    sendServer("<SYSTEM> [SENDFILE]: " + SENDFILESTOP);
                     this.checkReceiverState = false;
                     this.isReceiverConnected = false;
                 } else

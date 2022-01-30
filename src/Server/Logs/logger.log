@@ -1,3 +1,17 @@
-[30/01/2022 - 22:47:12]: <SYSTEM> ServerChat started
-[30/01/2022 - 22:47:20]: <SYSTEM> [KILLALL]: All users are logged out
-[30/01/2022 - 22:47:20]: <SYSTEM> [HALT]: Server halted
+[30/01/2022 - 22:59:31]: <SYSTEM> ServerChat started
+[30/01/2022 - 22:59:39]: <SYSTEM> [LOADBDD]: Database loaded, registered 7 new users
+[30/01/2022 - 22:59:41]: <SYSTEM> [LOGIN]: Connecting u1
+[30/01/2022 - 22:59:41]: <SYSTEM> u1 is now connected!
+[30/01/2022 - 22:59:41]: <SYSTEM> [LIST] [u1]
+[30/01/2022 - 22:59:44]: <SYSTEM> [LOGIN]: Connecting u2
+[30/01/2022 - 22:59:44]: <SYSTEM> u2 is now connected!
+[30/01/2022 - 22:59:44]: <SYSTEM> [LIST] [u2]
+[30/01/2022 - 23:00:03]: <SYSTEM> [SENDFILE] [u2]: Sending cafe.png to user u1
+[30/01/2022 - 23:00:03]: <SYSTEM> [SENDFILE] [u2]: File Sent
+[30/01/2022 - 23:00:12]: <SYSTEM> [LOGOUT]: Disconnecting u2
+[30/01/2022 - 23:00:12]: <SYSTEM> u2 is now disconnected!
+[30/01/2022 - 23:00:25]: <SYSTEM> [KILLALL]: Disconnecting u1 (1/1)
+[30/01/2022 - 23:00:25]: <SYSTEM> [LOGOUT]: Disconnecting u1
+[30/01/2022 - 23:00:25]: <SYSTEM> u1 is now disconnected!
+[30/01/2022 - 23:00:25]: <SYSTEM> [KILLALL]: All users are logged out
+[30/01/2022 - 23:00:25]: <SYSTEM> [HALT]: Server halted
