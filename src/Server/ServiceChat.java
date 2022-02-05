@@ -125,7 +125,7 @@ public class ServiceChat implements Runnable {
         while(!password.equals(confirmPassword)){
             this.client.getOut().println("Enter password: ");
             password = this.in.nextLine().trim();
-            this.client.getOut().println("Confirm Password: ");
+            this.client.getOut().println("Confirm password: ");
             confirmPassword = this.in.nextLine().trim();
         }
         this.client.setPassword(password);

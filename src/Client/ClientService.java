@@ -41,7 +41,7 @@ public class ClientService extends Thread {
 
     public ClientService(String host, int port) throws IOException {
         initStream(host, port);
-        //TODO: Authentication if log
+        authentication();
         start();
         listenConsole();
     }
@@ -87,29 +87,32 @@ public class ClientService extends Thread {
     }
     /*********/
 
-    private void isUserconnected(String raw){
+    private boolean isUserconnected(String raw){
         String[] splitRaw = raw.split(" ");
-        sendServer("<SYSTEM> [SENDFILE]: " + ISUSERCONNECTED + " " + splitRaw[1].trim() + " " + splitRaw[2].trim());
+        System.out.println("couuucou + " + splitRaw.length);
+        if (splitRaw.length == 3) {
+            sendServer("<SYSTEM> [SENDFILE]: " + ISUSERCONNECTED + " " + splitRaw[1].trim() + " " + splitRaw[2].trim());
+            return true;
+        }else {
+            displayConsole("<SYSTEM> [SENDFILE]: Bad arguments");
+            return false;
+        }
     }
 
     /* Features */
     private void sendFile(String raw) throws IOException {
         if(!checkReceiverState){
-            isUserconnected(raw);
-            this.checkReceiverState = true;
+            this.checkReceiverState = isUserconnected(raw);
         } else {
             if (this.isReceiverConnected) {
                 String[] splitRaw = raw.split(" ");
-                raw = "/sendfile " + splitRaw[5] + " " + splitRaw[7];
-                splitRaw = raw.split(" ");
-
-                if (splitRaw.length == 3) {
-
-                    File f = new File("./src/Client/Files/" + splitRaw[2].trim());
+                System.out.println("coucou + " + splitRaw.length);
+                if (splitRaw.length == 8) {
+                    File f = new File("./src/Client/Files/" + splitRaw[7].trim());
                     if (!f.exists()) {
                         displayConsole("<SYSTEM> [SENDFILE]: File doesn't exist");
                     } else {
-                        sendServer("/sendfile " + splitRaw[1] + " " + splitRaw[2]);
+                        sendServer("/sendfile " + splitRaw[5] + " " + splitRaw[7]);
 
                         FileInputStream fin = new FileInputStream(f);
                         int by = 0;
@@ -142,7 +145,25 @@ public class ClientService extends Thread {
 
     private void logout() {
         sendServer("/logout");
-    }/*********/
+    }
+
+    private void authentication() throws IOException {
+        while(this.inNetwork.hasNextLine()) {
+            String raw = this.inNetwork.nextLine().trim();
+            displayConsole(raw);
+            if(raw.startsWith("<SYSTEM> Connected as:"))
+                return;
+            else if (raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username or password is incorrect") || raw.startsWith("<SYSTEM> User already connected")){
+                closeConsole();
+                closeNetwork();
+                return;
+            }
+            if (raw.startsWith("<SYSTEM> Enter your username") || raw.startsWith("Enter password:") || raw.startsWith("Confirm password:")){
+                sendServer(this.inConsole.nextLine().trim());
+            }
+        }
+    }
+    /*********/
 
     private String serverParser(String text){
         if(text.startsWith("<SYSTEM> Connected as:"))

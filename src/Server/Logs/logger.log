@@ -1,17 +1,28 @@
-[30/01/2022 - 22:59:31]: <SYSTEM> ServerChat started
-[30/01/2022 - 22:59:39]: <SYSTEM> [LOADBDD]: Database loaded, registered 7 new users
-[30/01/2022 - 22:59:41]: <SYSTEM> [LOGIN]: Connecting u1
-[30/01/2022 - 22:59:41]: <SYSTEM> u1 is now connected!
-[30/01/2022 - 22:59:41]: <SYSTEM> [LIST] [u1]
-[30/01/2022 - 22:59:44]: <SYSTEM> [LOGIN]: Connecting u2
-[30/01/2022 - 22:59:44]: <SYSTEM> u2 is now connected!
-[30/01/2022 - 22:59:44]: <SYSTEM> [LIST] [u2]
-[30/01/2022 - 23:00:03]: <SYSTEM> [SENDFILE] [u2]: Sending cafe.png to user u1
-[30/01/2022 - 23:00:03]: <SYSTEM> [SENDFILE] [u2]: File Sent
-[30/01/2022 - 23:00:12]: <SYSTEM> [LOGOUT]: Disconnecting u2
-[30/01/2022 - 23:00:12]: <SYSTEM> u2 is now disconnected!
-[30/01/2022 - 23:00:25]: <SYSTEM> [KILLALL]: Disconnecting u1 (1/1)
-[30/01/2022 - 23:00:25]: <SYSTEM> [LOGOUT]: Disconnecting u1
-[30/01/2022 - 23:00:25]: <SYSTEM> u1 is now disconnected!
-[30/01/2022 - 23:00:25]: <SYSTEM> [KILLALL]: All users are logged out
-[30/01/2022 - 23:00:25]: <SYSTEM> [HALT]: Server halted
+[05/02/2022 - 17:45:36]: <SYSTEM> ServerChat started
+[05/02/2022 - 17:45:39]: <SYSTEM> [REGISTER]: Registering a
+[05/02/2022 - 17:46:47]: <SYSTEM> [LOGIN]: Connecting a
+[05/02/2022 - 17:46:47]: <SYSTEM> a is now connected!
+[05/02/2022 - 17:46:47]: <SYSTEM> [LIST] [a]
+[05/02/2022 - 17:48:32]: <SYSTEM> [KILLALL]: Disconnecting a (1/1)
+[05/02/2022 - 17:48:32]: <SYSTEM> [LOGOUT]: Disconnecting a
+[05/02/2022 - 17:48:32]: <SYSTEM> a is now disconnected!
+[05/02/2022 - 17:48:32]: <SYSTEM> [KILLALL]: All users are logged out
+[05/02/2022 - 17:48:34]: <SYSTEM> [REGISTER]: Registering 
+[05/02/2022 - 17:48:37]: <SYSTEM> [LOGIN]: Connecting a
+[05/02/2022 - 17:48:37]: <SYSTEM> a is now connected!
+[05/02/2022 - 17:48:37]: <SYSTEM> [LIST] [a]
+[05/02/2022 - 17:48:39]: [a] hi
+[05/02/2022 - 17:48:40]: <SYSTEM> [LOGOUT]: Disconnecting a
+[05/02/2022 - 17:48:40]: <SYSTEM> a is now disconnected!
+[05/02/2022 - 17:48:43]: <SYSTEM> [LOGIN]: Connecting a
+[05/02/2022 - 17:48:43]: <SYSTEM> a is now connected!
+[05/02/2022 - 17:48:43]: <SYSTEM> [LIST] [a]
+[05/02/2022 - 17:48:44]: <SYSTEM> [LOGOUT]: Disconnecting a
+[05/02/2022 - 17:48:44]: <SYSTEM> a is now disconnected!
+[05/02/2022 - 17:48:49]: <SYSTEM> [REGISTER]: Registering b
+[05/02/2022 - 17:48:51]: <SYSTEM> [LOGIN]: Connecting b
+[05/02/2022 - 17:48:51]: <SYSTEM> b is now connected!
+[05/02/2022 - 17:48:51]: <SYSTEM> [LIST] [b]
+[05/02/2022 - 17:48:53]: [b] /kill
+[05/02/2022 - 17:48:54]: <SYSTEM> [LOGOUT]: Disconnecting b
+[05/02/2022 - 17:48:54]: <SYSTEM> b is now disconnected!
