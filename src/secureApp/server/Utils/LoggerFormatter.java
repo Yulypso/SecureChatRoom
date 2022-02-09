@@ -1,4 +1,4 @@
-package Server.Utils;
+package secureApp.server.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;

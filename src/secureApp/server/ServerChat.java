@@ -1,6 +1,6 @@
-package Server;
+package secureApp.server;
 
-import Server.Utils.LoggerFormatter;
+import secureApp.server.Utils.LoggerFormatter;
 
 import java.net.*;
 import java.io.*;
@@ -15,7 +15,7 @@ public class ServerChat {
     public ServerChat(final int port){
 
         try {
-            Handler fileHandler = new FileHandler("./src/Server/Logs/logger.log");
+            Handler fileHandler = new FileHandler("./src/secureApp/server/Logs/logger.log");
             fileHandler.setFormatter(new LoggerFormatter());
             logger.addHandler(fileHandler);
             logger.log(Level.INFO, "<SYSTEM> ServerChat started");

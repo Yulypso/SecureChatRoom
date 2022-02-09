@@ -28,7 +28,7 @@ public class TheClient extends Thread {
 	private static final int SENDFILE = 1; // sendFile login filename
 	private static final int LOGOUT = 2; // /logout or /exit
 
-	// Server command
+	// secureApp.Server command
 	private static final int CONNECTED = 3;
 	private static final int ALREADYCONNECTED = 4;
 	private static final int REGISTERED = 5;
@@ -180,7 +180,7 @@ public class TheClient extends Thread {
     }
 
 
-	/* Server init & close */
+	/* secureApp.Server init & close */
 	public void initStream(String host, int port) throws IOException {
 		this.inConsole = new Scanner(System.in);
 		this.outConsole = new PrintWriter(System.out);

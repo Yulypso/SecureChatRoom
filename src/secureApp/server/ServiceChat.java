@@ -1,6 +1,6 @@
-package Server;
+package secureApp.server;
 
-import Server.Models.Client;
+import secureApp.server.Models.Client;
 
 import java.io.*;
 import java.net.Socket;
@@ -219,7 +219,7 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void saveBdd(String raw) {
-        String bddFile = "./src/Server/Databases/" + raw.split(" ")[1];
+        String bddFile = "./src/secureApp.Server/Databases/" + raw.split(" ")[1];
         try {
             new File(bddFile).delete();
 
@@ -237,7 +237,7 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void loadBdd(String raw) {
-        String bddFile = "./src/Server/Databases/" + raw.split(" ")[1];
+        String bddFile = "./src/secureApp.Server/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;
@@ -285,7 +285,7 @@ public class ServiceChat implements Runnable {
 
     private synchronized void haltServer() throws IOException {
         killAll();
-        ServerChat.logger.log(Level.INFO, "<SYSTEM> [HALT]: Server halted");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> [HALT]: secureApp.Server halted");
 
         this.client.getOut().close();
         System.exit(0);

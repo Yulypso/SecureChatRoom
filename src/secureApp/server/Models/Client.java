@@ -1,4 +1,4 @@
-package Server.Models;
+package secureApp.server.Models;
 
 import java.io.PrintWriter;
 import java.net.Socket;
