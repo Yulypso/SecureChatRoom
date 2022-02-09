@@ -1,4 +1,83 @@
-[09/02/2022 - 15:46:03]: <SYSTEM> ServerChat started
-[09/02/2022 - 15:46:06]: [ADMIN] hi
-[09/02/2022 - 15:46:08]: <SYSTEM> [KILLALL]: All users are logged out
-[09/02/2022 - 15:46:08]: <SYSTEM> [HALT]: secureApp.Server halted
+[09/02/2022 - 16:46:15]: <SYSTEM> ServerChat started
+[09/02/2022 - 16:46:41]: <SYSTEM> [REGISTER]: Registering a
+[09/02/2022 - 16:46:48]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:46:48]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:46:48]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:46:49]: [a] a
+[09/02/2022 - 16:46:49]: [a] hi
+[09/02/2022 - 16:46:52]: [ADMIN] hi
+[09/02/2022 - 16:46:54]: <SYSTEM> [LIST] [ADMIN]
+[09/02/2022 - 16:46:56]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:47:03]: <SYSTEM> [SENDFILE] [a]: Sending a to user a
+[09/02/2022 - 16:47:10]: <SYSTEM> [KILLUSER]: Disconnecting a
+[09/02/2022 - 16:47:10]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:47:10]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:48:32]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:48:32]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:48:32]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:48:34]: <SYSTEM> [SENDFILE] [a]: Sending a to user a
+[09/02/2022 - 16:49:14]: <SYSTEM> [KILLUSER]: Disconnecting a
+[09/02/2022 - 16:49:14]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:49:14]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:49:21]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:49:21]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:49:21]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:49:24]: <SYSTEM> [SENDFILE] [a]: Sending cafe.png to user a
+[09/02/2022 - 16:50:05]: <SYSTEM> [KILLUSER]: Disconnecting a
+[09/02/2022 - 16:50:05]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:50:05]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:51:05]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:51:05]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:51:05]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:51:09]: <SYSTEM> [SENDFILE] [a]: Sending cafe.png to user a
+[09/02/2022 - 16:53:45]: <SYSTEM> [KILLUSER]: Disconnecting a
+[09/02/2022 - 16:53:45]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:53:45]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:53:55]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:53:55]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:53:55]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:54:02]: <SYSTEM> [REGISTER]: Registering b
+[09/02/2022 - 16:54:06]: <SYSTEM> [LOGIN]: Connecting b
+[09/02/2022 - 16:54:06]: <SYSTEM> b is now connected!
+[09/02/2022 - 16:54:06]: <SYSTEM> [LIST] [b]
+[09/02/2022 - 16:54:09]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
+[09/02/2022 - 16:56:06]: <SYSTEM> [KILLALL]: Disconnecting a (1/2)
+[09/02/2022 - 16:56:06]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:56:06]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:56:06]: <SYSTEM> [KILLALL]: Disconnecting b (2/1)
+[09/02/2022 - 16:56:06]: <SYSTEM> [LOGOUT]: Disconnecting b
+[09/02/2022 - 16:56:06]: <SYSTEM> b is now disconnected!
+[09/02/2022 - 16:56:06]: <SYSTEM> [KILLALL]: All users are logged out
+[09/02/2022 - 16:56:15]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:56:15]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:56:15]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:56:17]: <SYSTEM> [LOGIN]: Connecting b
+[09/02/2022 - 16:56:17]: <SYSTEM> b is now connected!
+[09/02/2022 - 16:56:17]: <SYSTEM> [LIST] [b]
+[09/02/2022 - 16:56:21]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
+[09/02/2022 - 16:57:16]: <SYSTEM> [KILLALL]: Disconnecting a (1/2)
+[09/02/2022 - 16:57:16]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:57:16]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:57:16]: <SYSTEM> [KILLALL]: Disconnecting b (2/1)
+[09/02/2022 - 16:57:16]: <SYSTEM> [LOGOUT]: Disconnecting b
+[09/02/2022 - 16:57:16]: <SYSTEM> b is now disconnected!
+[09/02/2022 - 16:57:16]: <SYSTEM> [KILLALL]: All users are logged out
+[09/02/2022 - 16:57:25]: <SYSTEM> [LOGIN]: Connecting a
+[09/02/2022 - 16:57:25]: <SYSTEM> a is now connected!
+[09/02/2022 - 16:57:25]: <SYSTEM> [LIST] [a]
+[09/02/2022 - 16:57:28]: <SYSTEM> [LOGIN]: Connecting b
+[09/02/2022 - 16:57:28]: <SYSTEM> b is now connected!
+[09/02/2022 - 16:57:28]: <SYSTEM> [LIST] [b]
+[09/02/2022 - 16:57:32]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
+[09/02/2022 - 16:57:36]: [a] ok
+[09/02/2022 - 16:57:42]: [a] ok
+[09/02/2022 - 16:57:46]: [a] ok
+[09/02/2022 - 16:57:48]: [a] hi
+[09/02/2022 - 16:57:59]: <SYSTEM> [KILLALL]: Disconnecting a (1/2)
+[09/02/2022 - 16:57:59]: <SYSTEM> [LOGOUT]: Disconnecting a
+[09/02/2022 - 16:57:59]: <SYSTEM> a is now disconnected!
+[09/02/2022 - 16:57:59]: <SYSTEM> [KILLALL]: Disconnecting b (2/1)
+[09/02/2022 - 16:57:59]: <SYSTEM> [LOGOUT]: Disconnecting b
+[09/02/2022 - 16:57:59]: <SYSTEM> b is now disconnected!
+[09/02/2022 - 16:57:59]: <SYSTEM> [KILLALL]: All users are logged out
+[09/02/2022 - 16:57:59]: <SYSTEM> [HALT]: secureApp.Server halted

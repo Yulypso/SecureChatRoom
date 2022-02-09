@@ -52,12 +52,12 @@ public class TheClient extends Thread {
 
 
     public TheClient(String host, int port) throws IOException {
-		//initStream(host, port);
-		//authentication();
-		//start();
-		//listenConsole();
+		initStream(host, port);
+		authentication();
+		start();
+		listenConsole();
 
-	    try {
+	    /*try {
 		    SmartCard.start();
 		    System.out.print( "Smartcard inserted?... " ); 
 		    
@@ -77,7 +77,7 @@ public class TheClient extends Thread {
 	    } catch( Exception e ) {
 		    System.out.println( "TheClient error: " + e.getMessage() );
 	    }
-	    java.lang.System.exit(0) ;
+	    java.lang.System.exit(0) ;*/
     }
 
     private ResponseAPDU sendAPDU(CommandAPDU cmd) {
@@ -231,7 +231,6 @@ public class TheClient extends Thread {
 
 	private boolean isUserconnected(String raw){
 		String[] splitRaw = raw.split(" ");
-		System.out.println("couuucou + " + splitRaw.length);
 		if (splitRaw.length == 3) {
 			sendServer("<SYSTEM> [SENDFILE]: " + ISUSERCONNECTED + " " + splitRaw[1].trim() + " " + splitRaw[2].trim());
 			return true;
@@ -248,9 +247,8 @@ public class TheClient extends Thread {
 		} else {
 			if (this.isReceiverConnected) {
 				String[] splitRaw = raw.split(" ");
-				System.out.println("coucou + " + splitRaw.length);
 				if (splitRaw.length == 8) {
-					File f = new File("./src/Client/Files/" + splitRaw[7].trim());
+					File f = new File("../src/secureApp/client/Files/" + splitRaw[7].trim());
 					if (!f.exists()) {
 						displayConsole("<SYSTEM> [SENDFILE]: File doesn't exist");
 					} else {
@@ -276,7 +274,7 @@ public class TheClient extends Thread {
 	private synchronized void retrieveFile(String raw) throws IOException {
 		String[] splitRaw = raw.split(" ");
 		if(raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART")){
-			this.fout = new FileOutputStream("./src/Client/Files/retrieved_" + splitRaw[4]);
+			this.fout = new FileOutputStream("../src/secureApp/client/Files/retrieved_" + splitRaw[4]);
 		} else if (raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTOP")) {
 			this.fileTransferMode = false;
 			this.fout.close();
