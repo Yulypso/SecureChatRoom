@@ -276,6 +276,7 @@ public class TheClient extends Thread {
 		if(raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART")){
 			this.fout = new FileOutputStream("../src/secureApp/client/Files/retrieved_" + splitRaw[4]);
 		} else if (raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTOP")) {
+			System.out.println("SENDFILESTOP HERE"); // TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			this.fileTransferMode = false;
 			this.fout.close();
 		} else {

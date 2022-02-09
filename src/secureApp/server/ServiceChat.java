@@ -53,6 +53,9 @@ public class ServiceChat implements Runnable {
         this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
         this.in = new Scanner(System.in);
         this.client = new Client(new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true));
+
+        // development purpose
+        loadBdd("/loadbdd users.db");
     }
 
     private synchronized boolean userConnectedLimitReachedCheck() throws IOException {
@@ -219,7 +222,7 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void saveBdd(String raw) {
-        String bddFile = "./src/secureApp.Server/Databases/" + raw.split(" ")[1];
+        String bddFile = "../src/secureApp/server/Databases/" + raw.split(" ")[1];
         try {
             new File(bddFile).delete();
 
@@ -237,7 +240,7 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void loadBdd(String raw) {
-        String bddFile = "./src/secureApp.Server/Databases/" + raw.split(" ")[1];
+        String bddFile = "../src/secureApp/server/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;
