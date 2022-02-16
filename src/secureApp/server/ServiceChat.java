@@ -42,7 +42,7 @@ public class ServiceChat implements Runnable {
     public static final Map<String, PrintWriter> connectedClients = new HashMap<>();
     public static List<Client> registeredClients = new LinkedList<>();
 
-    public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) throws IOException { // User
+    public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) throws IOException {
         this.socket = socket;
         this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
         this.in = new Scanner(socket.getInputStream());
@@ -61,6 +61,7 @@ public class ServiceChat implements Runnable {
     private synchronized boolean userConnectedLimitReachedCheck() throws IOException {
         if (ServiceChat.connectedClients.size() >= NBMAXUSERCONNECTED){
             this.client.getOut().println("<SYSTEM> User connected limit reached");
+            this.client.getOut().close();
             this.socket.close();
             return true;
         }
@@ -108,6 +109,7 @@ public class ServiceChat implements Runnable {
                 register(username);
                 return false; // false = register
             } else {
+                System.out.println("debug : "+username);
                 login(username);
                 return true;
             }

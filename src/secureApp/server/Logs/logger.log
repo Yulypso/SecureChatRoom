@@ -1,10 +1,46 @@
-[09/02/2022 - 17:22:54]: <SYSTEM> ServerChat started
-[09/02/2022 - 17:22:54]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
-[09/02/2022 - 17:22:56]: <SYSTEM> [LOGIN]: Connecting a
-[09/02/2022 - 17:22:56]: <SYSTEM> a is now connected!
-[09/02/2022 - 17:22:56]: <SYSTEM> [LIST] [a]
-[09/02/2022 - 17:23:00]: <SYSTEM> [LOGIN]: Connecting b
-[09/02/2022 - 17:23:00]: <SYSTEM> b is now connected!
-[09/02/2022 - 17:23:00]: <SYSTEM> [LIST] [b]
-[09/02/2022 - 17:23:05]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
-[09/02/2022 - 17:23:59]: [a] 
+[16/02/2022 - 22:24:09]: <SYSTEM> ServerChat started
+[16/02/2022 - 22:24:09]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
+[16/02/2022 - 22:24:15]: <SYSTEM> [LOGIN]: Connecting h
+[16/02/2022 - 22:24:15]: <SYSTEM> h is now connected!
+[16/02/2022 - 22:24:15]: <SYSTEM> [LIST] [h]
+[16/02/2022 - 22:24:16]: [h] h
+[16/02/2022 - 22:24:17]: [h] h
+[16/02/2022 - 22:24:23]: <SYSTEM> [REGISTER]: Registering thierry
+[16/02/2022 - 22:24:27]: <SYSTEM> [LOGIN]: Connecting thierry
+[16/02/2022 - 22:24:27]: <SYSTEM> thierry is now connected!
+[16/02/2022 - 22:24:27]: <SYSTEM> [LIST] [thierry]
+[16/02/2022 - 22:24:28]: [thierry] hi
+[16/02/2022 - 22:24:31]: <SYSTEM> [LOGOUT]: Disconnecting thierry
+[16/02/2022 - 22:24:31]: <SYSTEM> thierry is now disconnected!
+[16/02/2022 - 22:24:47]: [h] okk
+[16/02/2022 - 22:24:49]: [ADMIN] ok
+[16/02/2022 - 22:24:52]: <SYSTEM> [LIST] [ADMIN]
+[16/02/2022 - 22:24:54]: <SYSTEM> [KILLALL]: Disconnecting h (1/1)
+[16/02/2022 - 22:24:54]: <SYSTEM> [LOGOUT]: Disconnecting h
+[16/02/2022 - 22:24:54]: <SYSTEM> h is now disconnected!
+[16/02/2022 - 22:24:54]: <SYSTEM> [KILLALL]: All users are logged out
+[16/02/2022 - 22:24:55]: [ADMIN] 
+[16/02/2022 - 22:24:55]: [ADMIN] 
+[16/02/2022 - 22:24:56]: [ADMIN] 
+[16/02/2022 - 22:24:56]: [ADMIN] 
+[16/02/2022 - 22:24:56]: [ADMIN] 
+[16/02/2022 - 22:24:57]: [ADMIN] oko
+[16/02/2022 - 22:25:00]: [ADMIN] 
+[16/02/2022 - 22:25:00]: [ADMIN] 
+[16/02/2022 - 22:25:00]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:01]: [ADMIN] 
+[16/02/2022 - 22:25:02]: [ADMIN] 
+[16/02/2022 - 22:25:02]: [ADMIN] 
+[16/02/2022 - 22:25:02]: [ADMIN] 
+[16/02/2022 - 22:25:03]: [ADMIN] 
+[16/02/2022 - 22:25:04]: [ADMIN] 
+[16/02/2022 - 22:25:04]: [ADMIN] 
+[16/02/2022 - 22:25:04]: [ADMIN] 
+[16/02/2022 - 22:25:04]: [ADMIN] 
+[16/02/2022 - 22:25:11]: <SYSTEM> [KILLALL]: All users are logged out
+[16/02/2022 - 22:25:11]: <SYSTEM> [HALT]: secureApp.Server halted

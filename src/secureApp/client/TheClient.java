@@ -34,7 +34,6 @@ public class TheClient extends Thread {
 	private static final int REGISTERED = 5;
 	private static final int ERR_REGISTERED = 6;
 	private static final int DISCONNECTED = 7;
-	private static final int USERLIMITREACHED = 8;
 	private static final int SENDFILESTOP = 9;
 	private static final int FILETRANSFERMODEON = 10;
 	private static final int FILETRANSFERMODEOFF = 11;
@@ -292,6 +291,11 @@ public class TheClient extends Thread {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			displayConsole(raw);
+			if(raw.startsWith("<SYSTEM> User connected limit reached")){
+				this.outConsole.println("debug too many users 1");
+				closeConsole();
+				closeNetwork();
+			}
 			if(raw.startsWith("<SYSTEM> Connected as:"))
 				return;
 			else if (raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username or password is incorrect") || raw.startsWith("<SYSTEM> User already connected")){
@@ -316,8 +320,6 @@ public class TheClient extends Thread {
 			return DISCONNECTED;
 		else if(text.startsWith("<SYSTEM> Username or password is incorrect"))
 			return ERR_REGISTERED;
-		else if(text.startsWith("<SYSTEM> User connected limit reached"))
-			return USERLIMITREACHED;
 		else if(text.startsWith("<SYSTEM> User already connected"))
 			return ALREADYCONNECTED;
 		else if(text.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART"))
@@ -352,7 +354,7 @@ public class TheClient extends Thread {
 					this.isReceiverConnected = false;
 					this.checkReceiverState = false;
 					break;
-				case REGISTERED: case ERR_REGISTERED: case DISCONNECTED: case USERLIMITREACHED: case ALREADYCONNECTED:
+				case REGISTERED: case ERR_REGISTERED: case DISCONNECTED: case ALREADYCONNECTED:
 					closeConsole();
 					closeNetwork();
 					break;
