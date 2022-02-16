@@ -109,13 +109,12 @@ public class ServiceChat implements Runnable {
                 register(username);
                 return false; // false = register
             } else {
-                System.out.println("debug : "+username);
                 login(username);
                 return true;
             }
 
         } else {
-            this.client.setUsername("HACKING DETECTED");
+            this.client.setUsername("Forbidden username");
             logout(this.client);
             return false;
         }
@@ -323,8 +322,8 @@ public class ServiceChat implements Runnable {
         ServerChat.logger.log(Level.INFO, "<SYSTEM> [KILLUSER]: User " + splitRaw[1] + " not found");
     }
 
-    private synchronized void sendFile(String raw) {
-        if(!fileTransferMode) {
+    private synchronized void sendFile(String raw) { // /sendfile user file
+        if(!fileTransferMode) { // not in transfer mode
             String[] splitRaw = raw.split(" ");
 
             boolean userFound = false;
@@ -344,7 +343,7 @@ public class ServiceChat implements Runnable {
                 this.fileTransferMode = false;
                 this.client.getOut().println("<SYSTEM> [SENDFILE]: Sending failed, User: " + splitRaw[1] + " is not connected");
             }
-        } else {
+        } else { // in transfer mode
             if (raw.equals("<SYSTEM> [SENDFILE]: SENDFILESTOP")){
                 this.outRetrievingClient.println("<SYSTEM> [SENDFILE]: SENDFILESTOP");
                 this.client.getOut().println("<SYSTEM> [SENDFILE]: File Sent");

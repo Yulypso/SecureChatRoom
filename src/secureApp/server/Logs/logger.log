@@ -1,46 +1,20 @@
-[16/02/2022 - 22:24:09]: <SYSTEM> ServerChat started
-[16/02/2022 - 22:24:09]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
-[16/02/2022 - 22:24:15]: <SYSTEM> [LOGIN]: Connecting h
-[16/02/2022 - 22:24:15]: <SYSTEM> h is now connected!
-[16/02/2022 - 22:24:15]: <SYSTEM> [LIST] [h]
-[16/02/2022 - 22:24:16]: [h] h
-[16/02/2022 - 22:24:17]: [h] h
-[16/02/2022 - 22:24:23]: <SYSTEM> [REGISTER]: Registering thierry
-[16/02/2022 - 22:24:27]: <SYSTEM> [LOGIN]: Connecting thierry
-[16/02/2022 - 22:24:27]: <SYSTEM> thierry is now connected!
-[16/02/2022 - 22:24:27]: <SYSTEM> [LIST] [thierry]
-[16/02/2022 - 22:24:28]: [thierry] hi
-[16/02/2022 - 22:24:31]: <SYSTEM> [LOGOUT]: Disconnecting thierry
-[16/02/2022 - 22:24:31]: <SYSTEM> thierry is now disconnected!
-[16/02/2022 - 22:24:47]: [h] okk
-[16/02/2022 - 22:24:49]: [ADMIN] ok
-[16/02/2022 - 22:24:52]: <SYSTEM> [LIST] [ADMIN]
-[16/02/2022 - 22:24:54]: <SYSTEM> [KILLALL]: Disconnecting h (1/1)
-[16/02/2022 - 22:24:54]: <SYSTEM> [LOGOUT]: Disconnecting h
-[16/02/2022 - 22:24:54]: <SYSTEM> h is now disconnected!
-[16/02/2022 - 22:24:54]: <SYSTEM> [KILLALL]: All users are logged out
-[16/02/2022 - 22:24:55]: [ADMIN] 
-[16/02/2022 - 22:24:55]: [ADMIN] 
-[16/02/2022 - 22:24:56]: [ADMIN] 
-[16/02/2022 - 22:24:56]: [ADMIN] 
-[16/02/2022 - 22:24:56]: [ADMIN] 
-[16/02/2022 - 22:24:57]: [ADMIN] oko
-[16/02/2022 - 22:25:00]: [ADMIN] 
-[16/02/2022 - 22:25:00]: [ADMIN] 
-[16/02/2022 - 22:25:00]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:01]: [ADMIN] 
-[16/02/2022 - 22:25:02]: [ADMIN] 
-[16/02/2022 - 22:25:02]: [ADMIN] 
-[16/02/2022 - 22:25:02]: [ADMIN] 
-[16/02/2022 - 22:25:03]: [ADMIN] 
-[16/02/2022 - 22:25:04]: [ADMIN] 
-[16/02/2022 - 22:25:04]: [ADMIN] 
-[16/02/2022 - 22:25:04]: [ADMIN] 
-[16/02/2022 - 22:25:04]: [ADMIN] 
-[16/02/2022 - 22:25:11]: <SYSTEM> [KILLALL]: All users are logged out
-[16/02/2022 - 22:25:11]: <SYSTEM> [HALT]: secureApp.Server halted
+[17/02/2022 - 00:17:09]: <SYSTEM> ServerChat started
+[17/02/2022 - 00:17:09]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
+[17/02/2022 - 00:17:13]: <SYSTEM> [LOGIN]: Connecting a
+[17/02/2022 - 00:17:13]: <SYSTEM> a is now connected!
+[17/02/2022 - 00:17:13]: <SYSTEM> [LIST] [a]
+[17/02/2022 - 00:17:16]: <SYSTEM> [LOGIN]: Connecting b
+[17/02/2022 - 00:17:16]: <SYSTEM> b is now connected!
+[17/02/2022 - 00:17:16]: <SYSTEM> [LIST] [b]
+[17/02/2022 - 00:17:20]: <SYSTEM> [SENDFILE] [b]: Sending yulypso.txt to user a
+[17/02/2022 - 00:17:20]: <SYSTEM> [SENDFILE] [b]: File Sent
+[17/02/2022 - 00:17:28]: [b] ok
+[17/02/2022 - 00:17:30]: [a] ok
+[17/02/2022 - 00:17:42]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
+[17/02/2022 - 00:17:49]: <SYSTEM> [SENDFILE] [b]: File Sent
+[17/02/2022 - 00:18:40]: <SYSTEM> [LOGOUT]: Disconnecting a
+[17/02/2022 - 00:18:40]: <SYSTEM> a is now disconnected!
+[17/02/2022 - 00:18:43]: <SYSTEM> [LOGOUT]: Disconnecting b
+[17/02/2022 - 00:18:43]: <SYSTEM> b is now disconnected!
+[17/02/2022 - 00:18:46]: <SYSTEM> [KILLALL]: All users are logged out
+[17/02/2022 - 00:18:46]: <SYSTEM> [HALT]: secureApp.Server halted

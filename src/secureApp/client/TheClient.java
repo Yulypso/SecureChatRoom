@@ -231,7 +231,7 @@ public class TheClient extends Thread {
 	private boolean isUserconnected(String raw){
 		String[] splitRaw = raw.split(" ");
 		if (splitRaw.length == 3) {
-			sendServer("<SYSTEM> [SENDFILE]: " + ISUSERCONNECTED + " " + splitRaw[1].trim() + " " + splitRaw[2].trim());
+			sendServer("<SYSTEM> [SENDFILE]: " + "ISUSERCONNECTED" + " " + splitRaw[1].trim() + " " + splitRaw[2].trim());
 			return true;
 		}else {
 			displayConsole("<SYSTEM> [SENDFILE]: Bad arguments");
@@ -241,6 +241,7 @@ public class TheClient extends Thread {
 
 	/* Features */
 	private void sendFile(String raw) throws IOException {
+		System.out.println("sendFile(): " + raw);
 		if(!checkReceiverState){
 			this.checkReceiverState = isUserconnected(raw);
 		} else {
@@ -252,14 +253,12 @@ public class TheClient extends Thread {
 						displayConsole("<SYSTEM> [SENDFILE]: File doesn't exist");
 					} else {
 						sendServer("/sendfile " + splitRaw[5] + " " + splitRaw[7]);
-
 						FileInputStream fin = new FileInputStream(f);
 						int by = 0;
 						while ((by = fin.read()) != -1) {
 							sendServer(String.valueOf(by));
-						}
-
-						sendServer("<SYSTEM> [SENDFILE]: " + SENDFILESTOP);
+						}		
+						sendServer("<SYSTEM> [SENDFILE]: " + "SENDFILESTOP");
 					}
 
 					this.checkReceiverState = false;
@@ -271,11 +270,10 @@ public class TheClient extends Thread {
 	}
 
 	private synchronized void retrieveFile(String raw) throws IOException {
-		String[] splitRaw = raw.split(" ");
 		if(raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART")){
+			String[] splitRaw = raw.split(" ");
 			this.fout = new FileOutputStream("../src/secureApp/client/Files/retrieved_" + splitRaw[4]);
 		} else if (raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTOP")) {
-			System.out.println("SENDFILESTOP HERE"); // TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			this.fileTransferMode = false;
 			this.fout.close();
 		} else {
@@ -291,20 +289,16 @@ public class TheClient extends Thread {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			displayConsole(raw);
-			if(raw.startsWith("<SYSTEM> User connected limit reached")){
-				this.outConsole.println("debug too many users 1");
-				closeConsole();
-				closeNetwork();
-			}
-			if(raw.startsWith("<SYSTEM> Connected as:"))
-				return;
-			else if (raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username or password is incorrect") || raw.startsWith("<SYSTEM> User already connected")){
-				closeConsole();
-				closeNetwork();
-				return;
-			}
+			
 			if (raw.startsWith("<SYSTEM> Enter your username") || raw.startsWith("Enter password:") || raw.startsWith("Confirm password:")){
 				sendServer(this.inConsole.nextLine().trim());
+			} else if(raw.startsWith("<SYSTEM> Connected as:")){
+				this.isClientConnected = true;
+				return;
+			} else if (raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username or password is incorrect") || raw.startsWith("<SYSTEM> User already connected")){
+				closeConsole();
+				closeNetwork();
+				return;
 			}
 		}
 	}
@@ -312,16 +306,8 @@ public class TheClient extends Thread {
 	/*********/
 
 	private int serverParser(String text){
-		if(text.startsWith("<SYSTEM> Connected as:"))
-			return CONNECTED;
-		else if(text.startsWith("<SYSTEM> Registration Successful"))
-			return REGISTERED;
-		else if(text.startsWith("<SYSTEM> Disconnecting..."))
+		if(text.startsWith("<SYSTEM> Disconnecting..."))
 			return DISCONNECTED;
-		else if(text.startsWith("<SYSTEM> Username or password is incorrect"))
-			return ERR_REGISTERED;
-		else if(text.startsWith("<SYSTEM> User already connected"))
-			return ALREADYCONNECTED;
 		else if(text.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART"))
 			return FILETRANSFERMODEON;
 		else if(text.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTOP"))
@@ -340,9 +326,6 @@ public class TheClient extends Thread {
 			if (!this.fileTransferMode)
 				displayConsole(raw);
 			switch (serverParser(raw)) {
-				case CONNECTED:
-					this.isClientConnected = true;
-					break;
 				case FILETRANSFERMODEON:
 					this.fileTransferMode = true;
 					break;
@@ -354,7 +337,7 @@ public class TheClient extends Thread {
 					this.isReceiverConnected = false;
 					this.checkReceiverState = false;
 					break;
-				case REGISTERED: case ERR_REGISTERED: case DISCONNECTED: case ALREADYCONNECTED:
+				case DISCONNECTED:
 					closeConsole();
 					closeNetwork();
 					break;
