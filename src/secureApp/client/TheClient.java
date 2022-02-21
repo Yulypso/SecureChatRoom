@@ -55,28 +55,6 @@ public class TheClient extends Thread {
 		authentication();
 		start();
 		listenConsole();
-
-	    /*try {
-		    SmartCard.start();
-		    System.out.print( "Smartcard inserted?... " ); 
-		    
-		    CardRequest cr = new CardRequest (CardRequest.ANYCARD,null,null); 
-		    
-		    SmartCard sm = SmartCard.waitForCard (cr);
-		   
-		    if (sm != null) {
-			    System.out.println ("got a SmartCard object!\n");
-		    } else
-			    System.out.println( "did not get a SmartCard object!\n" );
-		   
-		    this.initNewCard( sm ); 
-		    
-		    SmartCard.shutdown();
-	   
-	    } catch( Exception e ) {
-		    System.out.println( "TheClient error: " + e.getMessage() );
-	    }
-	    java.lang.System.exit(0) ;*/
     }
 
     private ResponseAPDU sendAPDU(CommandAPDU cmd) {
@@ -285,7 +263,7 @@ public class TheClient extends Thread {
 		sendServer("/logout");
 	}
 
-	private void authentication() throws IOException {
+	/*private void authentication() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			displayConsole(raw);
@@ -301,6 +279,49 @@ public class TheClient extends Thread {
 				return;
 			}
 		}
+	}*/
+
+	/* TODO : Authentication */
+	private void authentication() throws IOException {
+		while(this.inNetwork.hasNextLine()) {
+			String raw = this.inNetwork.nextLine().trim();
+			displayConsole(raw);
+			
+			if (raw.startsWith("<SYSTEM> Enter your username")) {
+				sendServer(this.inConsole.nextLine().trim());
+			} else if (raw.startsWith("<SYSTEM> AUTHENTICATION NEW")) {
+				System.out.println("received");
+			} else if(raw.startsWith("<SYSTEM> Connected as:")) {
+				this.isClientConnected = true;
+				return;
+			} else if (raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username is not registered") || raw.startsWith("<SYSTEM> User already connected")){
+				closeConsole();
+				closeNetwork();
+				return;
+			}
+		}
+
+		/*try {
+		    SmartCard.start();
+		    System.out.print( "Smartcard inserted?... " ); 
+		    
+		    CardRequest cr = new CardRequest (CardRequest.ANYCARD,null,null); 
+		    
+		    SmartCard sm = SmartCard.waitForCard (cr);
+		   
+		    if (sm != null) {
+			    System.out.println ("got a SmartCard object!\n");
+		    } else
+			    System.out.println( "did not get a SmartCard object!\n" );
+		   
+		    this.initNewCard( sm ); 
+		    
+		    SmartCard.shutdown();
+	   
+	    } catch( Exception e ) {
+		    System.out.println( "TheClient error: " + e.getMessage() );
+	    }
+	    java.lang.System.exit(0) ;*/
 	}
 
 	/*********/

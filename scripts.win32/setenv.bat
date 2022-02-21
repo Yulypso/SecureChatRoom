@@ -10,6 +10,7 @@ set GPSHELL=%MISC%\gpshell-1.4.2
 set JC21_HOME=%MISC%\java_card_kit-2_1_2
 set JC22_HOME=%MISC%\java_card_kit-2_2_1
 set JAVA_HOME=%MISC%\jdk1.6
+set SERVER_JAVA_HOME=%MISC%\jdk-17.0.2
 set OCF_HOME=%MISC%\OCF1.2
 set PCSC_WRAPPER=pcsc-wrapper-2.0
 set APDUIO_TERM=apduio-terminal-0.1
@@ -25,6 +26,8 @@ set PKGCLIENT=client
 set CLIENT=TheClient
 set PKGAPPLET=applet
 set APPLET=TheApplet
+set PKGSERVER=server
+set SERVER=ServerChat
 
 set AIDPACKAGE=0xA0:0x00:0x00:0x00:0x62:0x03:0x01:0x0C:0x06
 set PACKAGEAID=A00000006203010C06

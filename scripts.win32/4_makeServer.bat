@@ -11,13 +11,12 @@ set CLASSES=%CLASSES%;%OCF_HOME%\lib\base-opt.jar
 rem bouncy castle (crypto provider)
 set CLASSES=%CLASSES%;%MISC%\bcprov-jdk15on-150.jar
 
+echo Server Compilation...
+echo %SERVER_JAVA_HOME%
 
-IF NOT EXIST %OUT%\%PROJECT% MD %OUT%\%PROJECT% 
-
-echo Compilation...
-%JAVA_HOME%\bin\javac.exe -classpath %CLASSES% -g -d %OUT%\%PROJECT% %SRC%\%PROJECT%\%PKGCLIENT%\%CLIENT%.java
+%SERVER_JAVA_HOME%\bin\javac.exe --enable-preview --release 17 -classpath %CLASSES% -g -d %OUT% %SRC%\%PROJECT%\%PKGSERVER%\*.java %SRC%\%PROJECT%\%PKGSERVER%\Models\*.java %SRC%\%PROJECT%\%PKGSERVER%\Utils\*.java
 if errorlevel 1 goto error
-echo %CLIENT%.class compiled: OK
+echo %SERVER%.class compiled: OK
 echo .
 
 goto end

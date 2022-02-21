@@ -1,20 +1,11 @@
-[17/02/2022 - 00:17:09]: <SYSTEM> ServerChat started
-[17/02/2022 - 00:17:09]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
-[17/02/2022 - 00:17:13]: <SYSTEM> [LOGIN]: Connecting a
-[17/02/2022 - 00:17:13]: <SYSTEM> a is now connected!
-[17/02/2022 - 00:17:13]: <SYSTEM> [LIST] [a]
-[17/02/2022 - 00:17:16]: <SYSTEM> [LOGIN]: Connecting b
-[17/02/2022 - 00:17:16]: <SYSTEM> b is now connected!
-[17/02/2022 - 00:17:16]: <SYSTEM> [LIST] [b]
-[17/02/2022 - 00:17:20]: <SYSTEM> [SENDFILE] [b]: Sending yulypso.txt to user a
-[17/02/2022 - 00:17:20]: <SYSTEM> [SENDFILE] [b]: File Sent
-[17/02/2022 - 00:17:28]: [b] ok
-[17/02/2022 - 00:17:30]: [a] ok
-[17/02/2022 - 00:17:42]: <SYSTEM> [SENDFILE] [b]: Sending cafe.png to user a
-[17/02/2022 - 00:17:49]: <SYSTEM> [SENDFILE] [b]: File Sent
-[17/02/2022 - 00:18:40]: <SYSTEM> [LOGOUT]: Disconnecting a
-[17/02/2022 - 00:18:40]: <SYSTEM> a is now disconnected!
-[17/02/2022 - 00:18:43]: <SYSTEM> [LOGOUT]: Disconnecting b
-[17/02/2022 - 00:18:43]: <SYSTEM> b is now disconnected!
-[17/02/2022 - 00:18:46]: <SYSTEM> [KILLALL]: All users are logged out
-[17/02/2022 - 00:18:46]: <SYSTEM> [HALT]: secureApp.Server halted
+[21/02/2022 - 18:13:26]: <SYSTEM> ServerChat started
+[21/02/2022 - 18:13:26]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
+[21/02/2022 - 18:13:34]: <SYSTEM> [LOGIN]: Connecting yulypso
+[21/02/2022 - 18:13:34]: <SYSTEM> yulypso is now connected!
+[21/02/2022 - 18:13:34]: <SYSTEM> [LIST] [yulypso]
+[21/02/2022 - 18:13:45]: [yulypso] hi
+[21/02/2022 - 18:13:50]: <SYSTEM> [KILLALL]: Disconnecting yulypso (1/1)
+[21/02/2022 - 18:13:50]: <SYSTEM> [LOGOUT]: Disconnecting yulypso
+[21/02/2022 - 18:13:50]: <SYSTEM> yulypso is now disconnected!
+[21/02/2022 - 18:13:50]: <SYSTEM> [KILLALL]: All users are logged out
+[21/02/2022 - 18:13:50]: <SYSTEM> [HALT]: secureApp.Server halted
