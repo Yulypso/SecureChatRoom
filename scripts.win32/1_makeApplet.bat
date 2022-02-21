@@ -4,7 +4,7 @@ call .\setenv.bat
 
 IF NOT EXIST %OUT%\%PROJECT% MD %OUT%\%PROJECT% 
 
-echo Compilating...
+echo Applet Compilation...
 %JAVA_HOME%\bin\javac.exe -source 1.2 -target 1.2 -g -classpath %JC22_API% -d %OUT%\%PROJECT%\ %SRC%\%PROJECT%\%PKGAPPLET%\%APPLET%.java
 if errorlevel 1 goto error
 echo %APPLET%.class compiled: OK

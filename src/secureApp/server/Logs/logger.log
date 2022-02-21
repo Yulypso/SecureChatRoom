@@ -1,11 +1,61 @@
-[21/02/2022 - 18:13:26]: <SYSTEM> ServerChat started
-[21/02/2022 - 18:13:26]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
-[21/02/2022 - 18:13:34]: <SYSTEM> [LOGIN]: Connecting yulypso
-[21/02/2022 - 18:13:34]: <SYSTEM> yulypso is now connected!
-[21/02/2022 - 18:13:34]: <SYSTEM> [LIST] [yulypso]
-[21/02/2022 - 18:13:45]: [yulypso] hi
-[21/02/2022 - 18:13:50]: <SYSTEM> [KILLALL]: Disconnecting yulypso (1/1)
-[21/02/2022 - 18:13:50]: <SYSTEM> [LOGOUT]: Disconnecting yulypso
-[21/02/2022 - 18:13:50]: <SYSTEM> yulypso is now disconnected!
-[21/02/2022 - 18:13:50]: <SYSTEM> [KILLALL]: All users are logged out
-[21/02/2022 - 18:13:50]: <SYSTEM> [HALT]: secureApp.Server halted
+[21/02/2022 - 22:33:43]: <SYSTEM> ServerChat started
+[21/02/2022 - 22:33:43]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
+[21/02/2022 - 22:33:47]: <SYSTEM> User1is trying to connect
+[21/02/2022 - 22:33:50]: <SYSTEM> Authentication error User1
+[21/02/2022 - 22:33:50]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[21/02/2022 - 22:33:50]: <SYSTEM> User1 is now disconnected!
+[21/02/2022 - 22:35:02]: <SYSTEM> User1is trying to connect
+[21/02/2022 - 22:35:07]: <SYSTEM> Authentication success
+[21/02/2022 - 22:35:07]: <SYSTEM> [LOGIN]: Connecting User1
+[21/02/2022 - 22:35:07]: <SYSTEM> User1 is now connected!
+[21/02/2022 - 22:35:07]: <SYSTEM> [LIST] [User1]
+[21/02/2022 - 22:35:14]: [ADMIN] hi
+[21/02/2022 - 22:38:04]: <SYSTEM> User2is trying to connect
+[21/02/2022 - 22:38:06]: <SYSTEM> Authentication success
+[21/02/2022 - 22:38:06]: <SYSTEM> [LOGIN]: Connecting User2
+[21/02/2022 - 22:38:06]: <SYSTEM> User2 is now connected!
+[21/02/2022 - 22:38:06]: <SYSTEM> [LIST] [User2]
+[21/02/2022 - 22:38:10]: [User2] ok
+[21/02/2022 - 22:38:15]: [ADMIN] hi
+[21/02/2022 - 22:38:28]: [User2] l
+[21/02/2022 - 22:38:38]: [User1] 
+[21/02/2022 - 22:38:49]: [User2] 
+[21/02/2022 - 22:38:50]: <SYSTEM> [SENDFILE] [User2]: Sending cafe.png to user User1
+[21/02/2022 - 22:38:56]: [ADMIN] 
+[21/02/2022 - 22:38:58]: <SYSTEM> [SENDFILE] [User2]: File Sent
+[21/02/2022 - 22:39:02]: [User1] a
+[21/02/2022 - 22:39:03]: [User1] a
+[21/02/2022 - 22:39:06]: [User2] a
+[21/02/2022 - 22:40:01]: <SYSTEM> [SENDFILE] [User2]: Sending cafe.png to user User1
+[21/02/2022 - 22:40:07]: <SYSTEM> [SENDFILE] [User2]: File Sent
+[21/02/2022 - 22:40:10]: [User1] 
+[21/02/2022 - 22:40:25]: [User1] ok
+[21/02/2022 - 22:40:26]: [User1] ok
+[21/02/2022 - 22:40:28]: [User1] je suis cass‚
+[21/02/2022 - 22:40:29]: [User2] ok
+[21/02/2022 - 22:40:36]: [User1] a
+[21/02/2022 - 22:40:38]: <SYSTEM> [KILLUSER]: Disconnecting User1
+[21/02/2022 - 22:40:38]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[21/02/2022 - 22:40:38]: <SYSTEM> User1 is now disconnected!
+[21/02/2022 - 22:40:38]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[21/02/2022 - 22:40:38]: <SYSTEM> User1 is now disconnected!
+[21/02/2022 - 22:40:43]: <SYSTEM> [LIST] [ADMIN]
+[21/02/2022 - 22:40:48]: <SYSTEM> User1is trying to connect
+[21/02/2022 - 22:40:49]: <SYSTEM> Authentication success
+[21/02/2022 - 22:40:49]: <SYSTEM> [LOGIN]: Connecting User1
+[21/02/2022 - 22:40:49]: <SYSTEM> User1 is now connected!
+[21/02/2022 - 22:40:49]: <SYSTEM> [LIST] [User1]
+[21/02/2022 - 22:40:56]: <SYSTEM> [SENDFILE] [User2]: Sending cafe.png to user User1
+[21/02/2022 - 22:41:03]: <SYSTEM> [SENDFILE] [User2]: File Sent
+[21/02/2022 - 22:41:46]: <SYSTEM> [KILLALL]: Disconnecting User2 (1/2)
+[21/02/2022 - 22:41:46]: <SYSTEM> [LOGOUT]: Disconnecting User2
+[21/02/2022 - 22:41:46]: <SYSTEM> User2 is now disconnected!
+[21/02/2022 - 22:41:46]: <SYSTEM> [KILLALL]: Disconnecting User1 (2/1)
+[21/02/2022 - 22:41:46]: <SYSTEM> [LOGOUT]: Disconnecting User2
+[21/02/2022 - 22:41:46]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[21/02/2022 - 22:41:46]: <SYSTEM> User2 is now disconnected!
+[21/02/2022 - 22:41:46]: <SYSTEM> User1 is now disconnected!
+[21/02/2022 - 22:41:46]: <SYSTEM> [KILLALL]: All users are logged out
+[21/02/2022 - 22:41:46]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[21/02/2022 - 22:41:46]: <SYSTEM> [HALT]: secureApp.Server halted
+[21/02/2022 - 22:41:46]: <SYSTEM> User1 is now disconnected!

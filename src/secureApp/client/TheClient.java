@@ -7,10 +7,13 @@ import opencard.opt.util.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
 import java.io.IOException;
+import sun.misc.BASE64Encoder;
+import sun.misc.BASE64Decoder;
 
 
 public class TheClient extends Thread {
@@ -49,6 +52,11 @@ public class TheClient extends Thread {
 
 	private FileOutputStream fout = null;
 
+	private static final byte CLA = (byte) 0x90;
+	private static final byte P1 = (byte) 0x00;
+	private static final byte P2 = (byte) 0x00;
+	private static final byte INS_RSA_ENCRYPT             = (byte)0xA0;
+	private static final byte INS_RSA_DECRYPT             = (byte)0xA2;
 
     public TheClient(String host, int port) throws IOException {
 		initStream(host, port);
@@ -100,6 +108,67 @@ public class TheClient extends Thread {
 	    return string.replace( '\n', ' ' );
     }
 
+	private static boolean getExceptionMessage(String msg, String respCode) {
+		boolean isClear = false;
+		if (respCode.equals("90 00")) {
+			System.out.println(msg + ": [SW_NO_ERROR] No Error\n");
+			isClear = true;
+		} else if (respCode.equals("63 47")) {
+			System.out.println(msg + ": [DEBUG] Debug\n");
+		} else if (respCode.equals("69 99")) {
+			System.out.println(msg + ": [SW_APPLET_SELECT_FAILED] Applet selection failed\n");
+		} else if (respCode.equals("61 00")) {
+			System.out.println(msg + ": [SW_BYTES_REMAINING_00] Response bytes remaining\n");
+		} else if (respCode.equals("6E 00")) {
+			System.out.println(msg + ": [SW_CLA_NOT_SUPPORTED] CLA value not supported\n");
+		} else if (respCode.equals("68 84")) {
+			System.out.println(msg + ": [SW_COMMAND_CHAINING_NOT_SUPPORTED] Command chaining not supported\n");
+		} else if (respCode.equals("69 86")) {
+			System.out.println(msg + ": [SW_COMMAND_NOT_ALLOWED] Command not allowed (no current EF)\n");
+		} else if (respCode.equals("69 85")) {
+			System.out.println(msg + ": [SW_CONDITIONS_NOT_SATISFIED] Conditions of use not satisfied\n");
+		} else if (respCode.equals("6C 00")) {
+			System.out.println(msg + ": [SW_CORRECT_LENGTH_00] Correct Expected Length (Le)\n");
+		} else if (respCode.equals("69 84")) {
+			System.out.println(msg + ": [SW_DATA_INVALID] Data invalid\n");
+		} else if (respCode.equals("6A 84")) {
+			System.out.println(msg + ": [SW_FILE_FULL] Not enough memory space in the file\n");
+		} else if (respCode.equals("69 83")) {
+			System.out.println(msg + ": [SW_FILE_INVALID] File invalid\n");
+		} else if (respCode.equals("6A 82")) {
+			System.out.println(msg + ": [SW_FILE_NOT_FOUND] File not found\n");
+		} else if (respCode.equals("6A 81")) {
+			System.out.println(msg + ": [SW_FUNC_NOT_SUPPORTED] Function not supported\n");
+		} else if (respCode.equals("6A 86")) {
+			System.out.println(msg + ": [SW_INCORRECT_P1P2] Incorrect parameters (P1,P2)\n");
+		} else if (respCode.equals("6D 00")) {
+			System.out.println(msg + ": [SW_INS_NOT_SUPPORTED] INS value not supported\n");
+		} else if (respCode.equals("68 83")) {
+			System.out.println(msg + ": [SW_LAST_COMMAND_EXPECTED] Last command in chain expected\n");
+		} else if (respCode.equals("68 81")) {
+			System.out.println(msg
+					+ ": [SW_LOGICAL_CHANNEL_NOT_SUPPORTED] Card does not support the operation on the specified logical channel\n");
+		} else if (respCode.equals("6A 83")) {
+			System.out.println(msg + ": [SW_RECORD_NOT_FOUND] Record not found\n");
+		} else if (respCode.equals("68 82")) {
+			System.out.println(msg + ": [SW_SECURE_MESSAGING_NOT_SUPPORTED] Card does not support secure messaging\n");
+		} else if (respCode.equals("69 82")) {
+			System.out.println(msg + ": [SW_SECURITY_STATUS_NOT_SATISFIED] Security condition not satisfied\n");
+		} else if (respCode.equals("6F 00")) {
+			System.out.println(msg + ": [SW_UNKNOWN] No precise diagnosis\n");
+		} else if (respCode.equals("62 00")) {
+			System.out.println(msg + ": [SW_WARNING_STATE_UNCHANGED] Warning, card state unchanged\n");
+		} else if (respCode.equals("6A 80")) {
+			System.out.println(msg + ": [SW_WRONG_DATA] Wrong data\n");
+		} else if (respCode.equals("67 00")) {
+			System.out.println(msg + ": [SW_WRONG_LENGTH] Wrong length\n");
+		} else if (respCode.equals("6B 00")) {
+			System.out.println(msg + ": [SW_WRONG_P1P2] Incorrect parameters (P1,P2)\n");
+		} else {
+			System.out.println(msg + ": Undefined Error code\n");
+		}
+		return isClear;
+	}
 
     /******************************************
      * *********** END OF TOOLS ***************
@@ -122,38 +191,6 @@ public class TheClient extends Thread {
             java.lang.System.exit( -1 );
         }
 	return cardOk;
-    }
-
-
-    private void initNewCard( SmartCard card ) {
-	if( card != null )
-		System.out.println( "Smartcard inserted\n" );
-	else {
-		System.out.println( "Did not get a smartcard" );
-		System.exit( -1 );
-	}
-
-	System.out.println( "ATR: " + HexString.hexify( card.getCardID().getATR() ) + "\n");
-
-
-	try {
-		this.servClient = (PassThruCardService)card.getCardService( PassThruCardService.class, true );
-	} catch( Exception e ) {
-		System.out.println( e.getMessage() );
-	}
-
-	System.out.println("Applet selecting...");
-	if( !this.selectApplet() ) {
-		System.out.println( "Wrong card, no applet to select!\n" );
-		System.exit( 1 );
-		return;
-	} else 
-		System.out.println( "Applet selected\n" );
-       
-	    byte[] cmd_ = {0,0,0,0};
-            CommandAPDU cmd = new CommandAPDU( cmd_ );
-	    System.out.println("Sending blank command APDU, nothing expected back");
-            ResponseAPDU resp = this.sendAPDU( cmd, DISPLAY );
     }
 
 
@@ -281,47 +318,120 @@ public class TheClient extends Thread {
 		}
 	}*/
 
-	/* TODO : Authentication */
+	private boolean initNewCard(SmartCard card, byte[] challengeBytes) {
+		if( card != null )
+			System.out.println("Smartcard inserted\n");
+		else {
+			System.out.println("Did not get a smartcard");
+			return false;
+		}
+		System.out.println("ATR: " + HexString.hexify( card.getCardID().getATR() ) + "\n");
+	
+		try {
+			this.servClient = (PassThruCardService)card.getCardService( PassThruCardService.class, true);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	
+		System.out.println("Applet selecting...");
+		if(!this.selectApplet()) {
+			System.out.println("Wrong card, no applet to select!\n");
+			System.exit( 1 );
+			return false;
+		} else {
+			System.out.println("Applet selected\n");
+			return true;
+		}
+	}
+
+	private byte[] sendAndRetrieveChallengeApplet(byte[] challengeBytes) {
+		// Send encrypted
+		CommandAPDU cmd;
+		ResponseAPDU resp;
+
+		/* APDU
+		*	CLA	INS	P1	P2	LC	DATA
+		*	0	1	2	3	4	5
+		*/
+
+		int LC = challengeBytes.length;
+		byte[] DATA = challengeBytes;
+
+		byte[] cmd_b = new byte[LC + 6];
+		cmd_b[0] = CLA;
+		cmd_b[1] = INS_RSA_DECRYPT;
+		cmd_b[2] = (byte)0xFF;
+		cmd_b[3] = P2;
+		cmd_b[4] = (byte) LC;
+		System.arraycopy(DATA, 0, cmd_b, 5, LC);
+		cmd_b[cmd_b.length - 1] = (byte) LC;
+
+		cmd = new CommandAPDU(cmd_b);
+		resp = this.sendAPDU(cmd, DISPLAY);
+
+		if (getExceptionMessage("RSA DECRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+			byte[] bytes = resp.getBytes();
+			byte[] data = new byte[bytes.length - 2];
+			System.arraycopy(bytes, 0, data, 0, bytes.length - 2);
+		
+			//BASE64Encoder encoder = new BASE64Encoder();
+			//System.out.println("Unciphered by card is:\n" + encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "") + "\n");
+			return data;
+		} else
+			return new byte[] {(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff}; 
+	}
+
 	private void authentication() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
-			displayConsole(raw);
+			
+			if (!raw.startsWith("<SYSTEM> AUTHENTICATION NEW"))
+				displayConsole(raw);
 			
 			if (raw.startsWith("<SYSTEM> Enter your username")) {
 				sendServer(this.inConsole.nextLine().trim());
 			} else if (raw.startsWith("<SYSTEM> AUTHENTICATION NEW")) {
-				System.out.println("received");
+				String challengeBytesB64 = raw.split(" ")[3];
+				BASE64Decoder decoder = new BASE64Decoder();
+				byte[] challengeBytes = decoder.decodeBuffer(challengeBytesB64);
+
+				try {
+					SmartCard.start();
+					System.out.print("Smartcard inserted?... "); 
+					CardRequest cr = new CardRequest (CardRequest.ANYCARD, null, null); 
+					SmartCard sm = SmartCard.waitForCard (cr);
+				    
+					if (sm != null) {
+						System.out.println ("Got a SmartCard object!\n");
+					} else
+						System.out.println("Did not get a SmartCard object!\n");
+				   
+					if(this.initNewCard(sm, challengeBytes)) {
+						try {
+							BASE64Encoder encoder = new BASE64Encoder();
+							String challengeBytesUncipheredB64 = encoder.encode(sendAndRetrieveChallengeApplet(challengeBytes)).trim().replaceAll("\n", "").replaceAll("\r", "");
+							sendServer("<SYSTEM> AUTHENTICATION SOLVED " + challengeBytesUncipheredB64);
+						} catch( Exception e ) {
+							System.out.println( "initNewCard: " + e );
+						}
+					}
+					SmartCard.shutdown();
+				} catch( Exception e ) {
+					System.out.println("TheClient error: " + e.getMessage());
+					closeConsole();
+					closeNetwork();
+				}
+
 			} else if(raw.startsWith("<SYSTEM> Connected as:")) {
 				this.isClientConnected = true;
 				return;
-			} else if (raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> Username is not registered") || raw.startsWith("<SYSTEM> User already connected")){
+			} else if (raw.startsWith("<SYSTEM> Authentication error") || raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Username is not registered") || raw.startsWith("<SYSTEM> User already connected")){
 				closeConsole();
 				closeNetwork();
 				return;
 			}
 		}
-
-		/*try {
-		    SmartCard.start();
-		    System.out.print( "Smartcard inserted?... " ); 
-		    
-		    CardRequest cr = new CardRequest (CardRequest.ANYCARD,null,null); 
-		    
-		    SmartCard sm = SmartCard.waitForCard (cr);
-		   
-		    if (sm != null) {
-			    System.out.println ("got a SmartCard object!\n");
-		    } else
-			    System.out.println( "did not get a SmartCard object!\n" );
-		   
-		    this.initNewCard( sm ); 
-		    
-		    SmartCard.shutdown();
-	   
-	    } catch( Exception e ) {
-		    System.out.println( "TheClient error: " + e.getMessage() );
-	    }
-	    java.lang.System.exit(0) ;*/
 	}
 
 	/*********/

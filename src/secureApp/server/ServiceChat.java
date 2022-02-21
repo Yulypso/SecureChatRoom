@@ -63,6 +63,7 @@ public class ServiceChat implements Runnable {
     private KeyFactory factory;
 	private PublicKey pub;
 	private PrivateKey priv;
+    private final int DATASIZE = 128;	
     
 
     public ServiceChat(Socket socket, int NBMAXUSERCONNECTED) throws IOException {
@@ -70,6 +71,12 @@ public class ServiceChat implements Runnable {
         this.NBMAXUSERCONNECTED = NBMAXUSERCONNECTED;
         this.in = new Scanner(socket.getInputStream());
         this.client = new Client(new PrintWriter(socket.getOutputStream(), true), socket);
+
+        try {
+            generateRSAKeys();
+		} catch( Exception e ) {
+			System.out.println( "initNewCard: " + e );
+		}
     }
 
     public ServiceChat(int NBMAXUSERCONNECTED) { // Admin
@@ -149,7 +156,7 @@ public class ServiceChat implements Runnable {
 		RSAPrivateKeySpec privateSpec = new RSAPrivateKeySpec(modulus, privExponent);
 
 		// Create the RSA private and public keys 
-		this.factory = KeyFactory.getInstance( "RSA" );
+		this.factory = KeyFactory.getInstance("RSA");
 		this.pub = factory.generatePublic(publicSpec);
 		this.priv = factory.generatePrivate(privateSpec);
     }
@@ -216,24 +223,32 @@ public class ServiceChat implements Runnable {
         }
     }*/
 
-    private String generateChallenge() throws Exception {
-		// Get Cipher able to apply RSA_NOPAD, (must use "Bouncy Castle" crypto provider)
-		Security.addProvider(new BouncyCastleProvider());
-		Cipher cRSA_NO_PAD = Cipher.getInstance( "RSA/NONE/NoPadding", "BC" );
-
-		// Get challenge data 
-		final int DATASIZE = 128;		
+    private byte[] generateChallenge() throws Exception {
 		Random r = new Random((new Date()).getTime());
 		byte[] challengeBytes = new byte[DATASIZE];
 		r.nextBytes(challengeBytes);
 		challengeBytes[0] = (byte)((byte) 0x00 + (byte)(new Random().nextInt(0x8f - 0x00 + 0x01)));
-		System.out.println("challenge:\n" + Base64.getEncoder().encodeToString(challengeBytes) + "\n" );
+		System.out.println("Generated challenge:\n" + Base64.getEncoder().encodeToString(challengeBytes) + "\n");
 
-		return Base64.getEncoder().encodeToString(challengeBytes);
+		return challengeBytes;
+    }
+
+    private String encryptChallenge(byte[] challengeBytes) throws Exception {
+		// Get Cipher able to apply RSA_NOPAD, (must use "Bouncy Castle" crypto provider)
+		Security.addProvider(new BouncyCastleProvider());
+		Cipher cRSA_NO_PAD = Cipher.getInstance("RSA/NONE/NoPadding", "BC");
+
+        cRSA_NO_PAD.init(Cipher.ENCRYPT_MODE, this.pub);
+		byte[] ciphered = new byte[DATASIZE];
+		cRSA_NO_PAD.doFinal(challengeBytes, 0, DATASIZE, ciphered, 0);
+		System.out.println("Encrypted challenge:\n" + Base64.getEncoder().encodeToString(ciphered) + "\n");
+
+        return Base64.getEncoder().encodeToString(ciphered);
     }
 
     private synchronized boolean cardLogin(String username) throws IOException {
         this.client.getOut().println("<SYSTEM> Connecting...");
+        ServerChat.logger.log(Level.INFO, "<SYSTEM> " + username + " is trying to connect");
         int isFound = -1;
 
         for (Client client : registeredClients)
@@ -256,26 +271,45 @@ public class ServiceChat implements Runnable {
             } else {
 
                 try {
-                    String challengeBytesB64 = generateChallenge();
-                    System.out.println(challengeBytesB64);
-                    this.client.getOut().println("<SYSTEM> AUTHENTICATION NEW " + challengeBytesB64);
+                    byte[] challengeBytes = generateChallenge();
+                    String encryptedChallengeBytesB64 = encryptChallenge(challengeBytes);
+
+                    this.client.getOut().println("<SYSTEM> AUTHENTICATION NEW " + encryptedChallengeBytesB64);
+                
+                    String challengeBytesDecryptedB64 = null;
+                    while (this.in.hasNextLine()) {
+                        String raw = this.in.nextLine().trim();
+                        if(raw.startsWith("<SYSTEM> AUTHENTICATION SOLVED ")) {
+                            System.out.println(raw);
+                            challengeBytesDecryptedB64 = raw.split(" ")[3];
+                            break;
+                        }
+                    }
+
+                    if (Arrays.equals(challengeBytes, Base64.getDecoder().decode(challengeBytesDecryptedB64))) {
+                        this.client.getOut().println("<SYSTEM> Authentication success");
+                        ServerChat.logger.log(Level.INFO, "<SYSTEM> Authentication success");
+
+                        registeredClients.get(isFound).setOut(this.client.getOut()); 
+                        registeredClients.get(isFound).setSocket(this.client.getSocket());
+                        this.client = registeredClients.get(isFound);
+
+                        this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
+                        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
+                        broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
+
+                        connectedClients.put(this.client.getUsername(), this.client.getOut());
+                        listClients();
+
+                        return true;
+                    } else {
+                        this.client.getOut().println("<SYSTEM> Authentication error");
+                        ServerChat.logger.log(Level.INFO, "<SYSTEM> Authentication error: " + username);
+                        return false;
+                    }
                 } catch( Exception e ) {
-                    System.out.println( "initNewCard: " + e );
+                    System.out.println("initNewCard: " + e);
                 }
-
-
-                registeredClients.get(isFound).setOut(this.client.getOut()); // update printwriter
-                registeredClients.get(isFound).setSocket(this.client.getSocket()); // update socket
-                this.client = registeredClients.get(isFound);
-
-                this.client.getOut().println("<SYSTEM> Connected as: " + this.client.getUsername());
-                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: Connecting " + this.client.getUsername());
-                broadcastMessage("SYSTEM", this.client.getUsername() + " is now connected!", true);
-
-                connectedClients.put(this.client.getUsername(), this.client.getOut());
-                listClients();
-
-                return true;
             }
         }
         return false;
@@ -593,6 +627,7 @@ public class ServiceChat implements Runnable {
                     }
                 }
             }
+            logout(this.client);
         } catch (IOException e) {
             e.printStackTrace();
         }
