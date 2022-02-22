@@ -271,6 +271,13 @@ public class ServiceChat implements Runnable {
             } else {
 
                 try {
+
+                    /* Get public key section */
+
+
+
+
+                    /* Challenge section */
                     byte[] challengeBytes = generateChallenge();
                     String encryptedChallengeBytesB64 = encryptChallenge(challengeBytes);
 
@@ -412,7 +419,7 @@ public class ServiceChat implements Runnable {
         this.client.getOut().println("-----------------------------");
         for(Map.Entry<String, PrintWriter> client : connectedClients.entrySet()) {
             String key = client.getKey();
-            this.client.getOut().print(key + " ");
+            this.client.getOut().print("<" + key + "> ");
         }
         this.client.getOut().println("\n-----------------------------");
         ServerChat.logger.log(Level.INFO, "<SYSTEM> [LIST] [" + this.client.getUsername() + "]");

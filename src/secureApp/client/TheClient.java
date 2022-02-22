@@ -248,6 +248,15 @@ public class TheClient extends Thread {
 		return r;
 	}
 
+	private void displayBytes(byte[] bytes){
+		int i = 0;
+		for (byte b : bytes) {
+			System.out.printf("%02X ", b);
+			if (++i%8 == 0)
+				System.out.println("");
+		}
+	}
+
 	private static short byteToShort(byte b) {
 		return (short) (b & 0xff);
 	}
@@ -453,6 +462,11 @@ public class TheClient extends Thread {
 				   
 					if(this.initNewCard(sm, challengeBytes)) {
 						try {
+
+							/* Get Public Key Section */
+
+
+							/* Challenge section */
 							BASE64Encoder encoder = new BASE64Encoder();
 							String challengeBytesUncipheredB64 = encoder.encode(sendAndRetrieveChallengeApplet(challengeBytes)).trim().replaceAll("\n", "").replaceAll("\r", "");
 							sendServer("<SYSTEM> AUTHENTICATION SOLVED " + challengeBytesUncipheredB64);
@@ -460,7 +474,6 @@ public class TheClient extends Thread {
 							System.out.println( "initNewCard: " + e );
 						}
 					}
-					SmartCard.shutdown();
 				} catch( Exception e ) {
 					System.out.println("TheClient error: " + e.getMessage());
 					closeConsole();
@@ -484,11 +497,10 @@ public class TheClient extends Thread {
 
 		byte[] bytes = raw.getBytes();
 		int remainingBytes = bytes.length;
-		byte[] res = new byte[remainingBytes];
+		byte[] res = new byte[remainingBytes + (short) (8 - (raw.getBytes().length % 8))];
 
 		short i = 0;
 		while (remainingBytes > DMS_DES) {
-			System.out.println("in while loop ");
 			byte[] data = new byte[DMS_DES];
 			System.arraycopy(bytes, i * DMS_DES, data, 0, DMS_DES);
 
@@ -511,13 +523,9 @@ public class TheClient extends Thread {
 			}
 		}
 
-		System.out.println("end while loop ");
 		byte[] data = new byte[remainingBytes];
 		System.arraycopy(bytes, i * DMS_DES, data, 0, remainingBytes);
-
-		System.out.println("before add padding ");
 		data = addPadding(data, raw.getBytes().length);
-		System.out.println("after add padding ");
 
 		byte[] payload = new byte[data.length + 6];
 		payload[0] = CLA;
@@ -529,19 +537,74 @@ public class TheClient extends Thread {
 		payload[payload.length - 1] = (byte) data.length;
 		
 		cmd = new CommandAPDU(payload);
-		displayAPDU(cmd);
-
-		System.out.println("before send apdu");
 		resp = this.sendAPDU(cmd, DISPLAY);
-		System.out.println("after send apdu"); // TODO: GIGA BUG
 
 		if (getExceptionMessage("DES ENCRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
 			byte[] b = resp.getBytes();
 			System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
 			BASE64Encoder encoder = new BASE64Encoder();
-			return encoder.encode(res);
+			return encoder.encode(res).trim().replaceAll("\n", "").replaceAll("\r", "");
+		}
+		return "Error";
+	}
+
+	private synchronized String decryptMsgB64(String raw) throws IOException {
+		CommandAPDU cmd;
+		ResponseAPDU resp;
+
+		BASE64Decoder decoder = new BASE64Decoder();
+		String[] splitRaw = raw.split(" ");
+		byte[] bytes = decoder.decodeBuffer(splitRaw[1]);
+		int remainingBytes = bytes.length;
+
+		byte[] res = new byte[remainingBytes];
+
+		short i = 0;
+		while (remainingBytes > DMS_DES) {
+			byte[] data = new byte[DMS_DES];
+			System.arraycopy(bytes, i * DMS_DES, data, 0, DMS_DES);
+
+			byte[] payload = new byte[DMS_DES + 6];
+			payload[0] = CLA;
+			payload[1] = INS_DES_DECRYPT;
+			payload[2] = P1;
+			payload[3] = P2;
+			payload[4] = (byte) DMS_DES;
+			System.arraycopy(data, 0, payload, 5, DMS_DES);
+			payload[payload.length - 1] = (byte) DMS_DES;
+			
+			cmd = new CommandAPDU(payload);
+			resp = this.sendAPDU(cmd, DISPLAY);
+
+			if (getExceptionMessage("DES DECRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+				byte[] b = resp.getBytes();
+				System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
+				++i; remainingBytes -= DMS_DES;
+			}
 		}
 
+		byte[] data = new byte[remainingBytes];
+		System.arraycopy(bytes, i * DMS_DES, data, 0, remainingBytes);
+
+		byte[] payload = new byte[data.length + 6];
+		payload[0] = CLA;
+		payload[1] = INS_DES_DECRYPT;
+		payload[2] = P1;
+		payload[3] = P2;
+		payload[4] = (byte) data.length;
+		System.arraycopy(data, 0, payload, 5, data.length);
+		payload[payload.length - 1] = (byte) data.length;
+		
+		cmd = new CommandAPDU(payload);
+		resp = this.sendAPDU(cmd, DISPLAY);
+
+		if (getExceptionMessage("DES DECRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+			byte[] b = resp.getBytes();
+			System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
+
+			res = removePadding(res);
+			return splitRaw[0] + " " + new String(res);
+		}
 		return "Error";
 	}
 
@@ -565,8 +628,7 @@ public class TheClient extends Thread {
 	private void listenNetwork() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
-			if (!this.fileTransferMode)
-				displayConsole(raw);
+			
 			switch (serverParser(raw)) {
 				case FILETRANSFERMODEON:
 					this.fileTransferMode = true;
@@ -580,9 +642,16 @@ public class TheClient extends Thread {
 					this.checkReceiverState = false;
 					break;
 				case DISCONNECTED:
+					SmartCard.shutdown();
 					closeConsole();
 					closeNetwork();
 					break;
+				default:
+					if (!this.fileTransferMode){
+						if(!raw.startsWith("<SYSTEM>") && !raw.startsWith("-") && !raw.startsWith("<"))
+							raw = decryptMsgB64(raw);
+						displayConsole(raw);
+					}
 			}
 			if(this.fileTransferMode){
 				retrieveFile(raw);
