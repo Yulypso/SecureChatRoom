@@ -9,6 +9,8 @@ public class Client {
     private PrintWriter out;
     private String username;
     private String password;
+    private String RSAModulus = null;
+    private String RSAExponent = null;
     private Socket socket;
 
     public Client(PrintWriter out, Socket socket){ // User
@@ -23,10 +25,33 @@ public class Client {
         this.isAdmin = false;
     }
 
+    public Client(String username, String RSAExponent, String RSAModulus){ // User
+        this.username = username;
+        this.RSAExponent = RSAExponent;
+        this.RSAModulus = RSAModulus;
+        this.isAdmin = false;
+    }
+
     public Client(PrintWriter out){ // Admin
         this.out = out;
         this.isAdmin = true;
         this.username = "ADMIN";
+    }
+
+    public String getRSAModulus() {
+        return this.RSAModulus;
+    }
+
+    public String getRSAExponent() {
+        return this.RSAExponent;
+    }
+
+    public void setRSAModulus(String RSAModulus) {
+        this.RSAModulus = RSAModulus;
+    }
+
+    public void setRSAExponent(String RSAExponent) {
+        this.RSAExponent = RSAExponent;
     }
 
     public PrintWriter getOut() {

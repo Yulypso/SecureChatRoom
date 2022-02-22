@@ -57,6 +57,8 @@ public class TheClient extends Thread {
 	private static final byte CLA = (byte) 0x90;
 	private static final byte P1 = (byte) 0x00;
 	private static final byte P2 = (byte) 0x00;
+	private final static byte INS_GET_PUBLIC_RSA_KEY = (byte)0xFE;
+	private final static byte INS_GENERATE_RSA_KEY = (byte)0xF6;
 	private static final byte INS_RSA_ENCRYPT = (byte) 0xA0;
 	private static final byte INS_RSA_DECRYPT = (byte) 0xA2;
 
@@ -371,7 +373,7 @@ public class TheClient extends Thread {
 		}
 	}*/
 
-	private boolean initNewCard(SmartCard card, byte[] challengeBytes) {
+	private boolean initNewCard(SmartCard card) {
 		if( card != null )
 			System.out.println("Smartcard inserted\n");
 		else {
@@ -435,15 +437,88 @@ public class TheClient extends Thread {
 			return new byte[] {(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff}; 
 	}
 
+	private String getKeyElementFromApplet(byte b) {
+		CommandAPDU cmd;
+		ResponseAPDU resp;
+
+		byte[] cmd_b = new byte[5];
+		cmd_b[0] = CLA;
+		cmd_b[1] = INS_GET_PUBLIC_RSA_KEY;
+		cmd_b[2] = P1;
+		cmd_b[3] = b;
+		cmd_b[4] = (byte) 0x00;
+
+		cmd = new CommandAPDU(cmd_b);
+		resp = this.sendAPDU(cmd, DISPLAY);
+
+		if (getExceptionMessage("GET PUBLIC RSA KEY ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+			byte[] bytes = resp.getBytes();
+			byte[] data = new byte[bytes.length - 3];
+			System.arraycopy(bytes, 1, data, 0, bytes.length - 3);
+		
+			displayBytes(data);
+
+			BASE64Encoder encoder = new BASE64Encoder();
+			//System.out.println("Unciphered by card is:\n" + encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "") + "\n");
+			return encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "");
+		} else
+			return "Error"; 
+	}
+
+	private void generateRSAKeysFromApplet() {
+		CommandAPDU cmd;
+		ResponseAPDU resp;
+
+		byte[] cmd_b = new byte[5];
+		cmd_b[0] = CLA;
+		cmd_b[1] = INS_GENERATE_RSA_KEY;
+		cmd_b[2] = P1;
+		cmd_b[3] = P2;
+		cmd_b[4] = (byte) 0x00;
+
+		cmd = new CommandAPDU(cmd_b);
+		resp = this.sendAPDU(cmd, DISPLAY);
+
+		if (!getExceptionMessage("GENERATE RSA KEY ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+			System.out.println("Error");
+		} 
+	}
+
 	private void authentication() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			
-			if (!raw.startsWith("<SYSTEM> AUTHENTICATION NEW"))
+			if (!raw.startsWith("<SYSTEM> AUTHENTICATION NEW") && !raw.startsWith("<SYSTEM> REGISTRATION NEW"))
 				displayConsole(raw);
 			
 			if (raw.startsWith("<SYSTEM> Enter your username")) {
 				sendServer(this.inConsole.nextLine().trim());
+			} else if (raw.startsWith("<SYSTEM> REGISTRATION NEW")) {
+				try {
+					SmartCard.start();
+					System.out.print("Smartcard inserted?... "); 
+					CardRequest cr = new CardRequest (CardRequest.ANYCARD, null, null); 
+					SmartCard sm = SmartCard.waitForCard (cr);
+				    
+					if (sm != null) {
+						System.out.println ("Got a SmartCard object!\n");
+					} else
+						System.out.println("Did not get a SmartCard object!\n");
+				   
+					if(this.initNewCard(sm)) {
+						generateRSAKeysFromApplet();
+						String modulus = getKeyElementFromApplet((byte) 0x00);
+						String exponent = getKeyElementFromApplet((byte) 0x01);
+						sendServer("<SYSTEM> REGISTRATION MODULUS " + modulus);
+						sendServer("<SYSTEM> REGISTRATION EXPONENT " + exponent);
+					}
+				} catch( Exception e ) {
+					System.out.println("TheClient error: " + e.getMessage());
+					SmartCard.shutdown();
+					closeConsole();
+					closeNetwork();
+				}
+
 			} else if (raw.startsWith("<SYSTEM> AUTHENTICATION NEW")) {
 				String challengeBytesB64 = raw.split(" ")[3];
 				BASE64Decoder decoder = new BASE64Decoder();
@@ -460,22 +535,19 @@ public class TheClient extends Thread {
 					} else
 						System.out.println("Did not get a SmartCard object!\n");
 				   
-					if(this.initNewCard(sm, challengeBytes)) {
+					if(this.initNewCard(sm)) {
 						try {
-
-							/* Get Public Key Section */
-
-
 							/* Challenge section */
 							BASE64Encoder encoder = new BASE64Encoder();
 							String challengeBytesUncipheredB64 = encoder.encode(sendAndRetrieveChallengeApplet(challengeBytes)).trim().replaceAll("\n", "").replaceAll("\r", "");
 							sendServer("<SYSTEM> AUTHENTICATION SOLVED " + challengeBytesUncipheredB64);
-						} catch( Exception e ) {
-							System.out.println( "initNewCard: " + e );
+						} catch(Exception e) {
+							System.out.println(e);
 						}
 					}
 				} catch( Exception e ) {
 					System.out.println("TheClient error: " + e.getMessage());
+					SmartCard.shutdown();
 					closeConsole();
 					closeNetwork();
 				}
@@ -483,7 +555,8 @@ public class TheClient extends Thread {
 			} else if(raw.startsWith("<SYSTEM> Connected as:")) {
 				this.isClientConnected = true;
 				return;
-			} else if (raw.startsWith("<SYSTEM> Authentication error") || raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Username is not registered") || raw.startsWith("<SYSTEM> User already connected")){
+			} else if (raw.startsWith("<SYSTEM> Authentication error") || raw.startsWith("<SYSTEM> Registration Successful") || raw.startsWith("<SYSTEM> User connected limit reached") || raw.startsWith("<SYSTEM> Username is not registered") || raw.startsWith("<SYSTEM> User already connected")){
+				SmartCard.shutdown();
 				closeConsole();
 				closeNetwork();
 				return;
@@ -549,6 +622,9 @@ public class TheClient extends Thread {
 	}
 
 	private synchronized String decryptMsgB64(String raw) throws IOException {
+
+		System.out.println("DEBUG [" + raw + "]");
+
 		CommandAPDU cmd;
 		ResponseAPDU resp;
 
@@ -648,7 +724,7 @@ public class TheClient extends Thread {
 					break;
 				default:
 					if (!this.fileTransferMode){
-						if(!raw.startsWith("<SYSTEM>") && !raw.startsWith("-") && !raw.startsWith("<"))
+						if(!raw.startsWith("<SYSTEM>") && !raw.startsWith("-") && !raw.startsWith("<") && raw.split(" ").length > 1 && !raw.startsWith("[ADMIN]"))
 							raw = decryptMsgB64(raw);
 						displayConsole(raw);
 					}
