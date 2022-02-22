@@ -1,15 +1,10 @@
 package applet;
 
-
-
-
 import javax.sound.sampled.DataLine;
 
 import javacard.framework.*;
 import javacard.security.*;
 import javacardx.crypto.*;
-
-
 
 
 public class TheApplet extends Applet {
@@ -21,6 +16,19 @@ public class TheApplet extends Applet {
 	private final static byte INS_GET_PUBLIC_RSA_KEY      = (byte)0xFE;
 	private final static byte INS_PUT_PUBLIC_RSA_KEY      = (byte)0xF4;
 
+    private static short DMS_DES = 248; // DATA MAX SIZE for DES
+    private static final byte INS_DES_DECRYPT = (byte) 0xB0;
+    private static final byte INS_DES_ENCRYPT = (byte) 0xB2;
+
+
+	// DES Keys section
+    // cipher instances
+    private Cipher cDES_ECB_NOPAD_enc, cDES_ECB_NOPAD_dec;
+    private Key secretDESKey;
+    static final byte[] theDESKey = new byte[] {(byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA};
+    boolean pseudoRandom, secureRandom, SHA1, MD5, RIPEMD160, keyDES, DES_ECB_NOPAD, DES_CBC_NOPAD;
+
+	// RSA Keys section
 	// cipher instances
 	private Cipher cRSA_NO_PAD;
 	// key objects
@@ -29,11 +37,6 @@ public class TheApplet extends Applet {
 
 	// cipher key length
 	private short cipherRSAKeyLength;
-
-
-
-
-	// RSA Keys section
 
 	// n = modulus
 	static final byte[] n = new byte[] {
@@ -81,6 +84,11 @@ public class TheApplet extends Applet {
 	};
 
 	protected TheApplet() {
+        /* DES */
+        initKeyDES();
+        initDES_ECB_NOPAD();
+
+        /* RSA */ 
 		publicRSAKey = privateRSAKey = null;
 		cRSA_NO_PAD = null;
 
@@ -97,8 +105,7 @@ public class TheApplet extends Applet {
 		// get cipher RSA instance
 		cRSA_NO_PAD = Cipher.getInstance((byte)0x0C, false );
 
-		register();
-
+		this.register();
 	}
 
 
@@ -106,6 +113,28 @@ public class TheApplet extends Applet {
 		new TheApplet();
 	}
 
+    private void initKeyDES() {
+        try {
+            secretDESKey = KeyBuilder.buildKey(KeyBuilder.TYPE_DES, KeyBuilder.LENGTH_DES, false);
+            ((DESKey) secretDESKey).setKey(theDESKey, (short) 0);
+            keyDES = true;
+        } catch (Exception e) {
+            keyDES = false;
+        }
+    }
+
+    private void initDES_ECB_NOPAD() {
+        if (keyDES)
+            try {
+                cDES_ECB_NOPAD_enc = Cipher.getInstance(Cipher.ALG_DES_ECB_NOPAD, false);
+                cDES_ECB_NOPAD_dec = Cipher.getInstance(Cipher.ALG_DES_ECB_NOPAD, false);
+                cDES_ECB_NOPAD_enc.init(secretDESKey, Cipher.MODE_ENCRYPT);
+                cDES_ECB_NOPAD_dec.init(secretDESKey, Cipher.MODE_DECRYPT);
+                DES_ECB_NOPAD = true;
+            } catch (Exception e) {
+                DES_ECB_NOPAD = false;
+            }
+    }
 
 	private static short byteToShort(byte b) {
         return (short) (b & 0xff);
@@ -121,8 +150,8 @@ public class TheApplet extends Applet {
     }
 
 	public void process(APDU apdu) throws ISOException {
-		if (selectingApplet())
-			return ;
+		if (selectingApplet() == true)
+			return;
 
 		byte[] buffer = apdu.getBuffer();
 
@@ -135,10 +164,11 @@ public class TheApplet extends Applet {
 			case INS_RSA_DECRYPT: RSADecrypt(apdu); break;
 			case INS_GET_PUBLIC_RSA_KEY: getPublicRSAKey(apdu); break;
 			case INS_PUT_PUBLIC_RSA_KEY: putPublicRSAKey(apdu); break;
+            case INS_DES_ENCRYPT: cipherGeneric(apdu, cDES_ECB_NOPAD_dec, KeyBuilder.LENGTH_DES); break;
+            case INS_DES_DECRYPT: cipherGeneric(apdu, cDES_ECB_NOPAD_enc, KeyBuilder.LENGTH_DES); break;
 			default: ISOException.throwIt(ISO7816.SW_FUNC_NOT_SUPPORTED);
 		}
 	}
-
 
 	void generateRSAKey() {
 		keyPair = new KeyPair(KeyPair.ALG_RSA, (short)publicRSAKey.getSize());
@@ -188,7 +218,6 @@ public class TheApplet extends Applet {
 		apdu.setOutgoingAndSend((short)0, (short)((buffer[0] & 0xFF) + 1));
 	}
 
-
 	void putPublicRSAKey(APDU apdu) {
 		byte[] buffer = apdu.getBuffer();
 		// get the element type and length
@@ -211,4 +240,12 @@ public class TheApplet extends Applet {
 			// initialize exponent
 			((RSAPublicKey)publicRSAKey).setExponent(buffer, (short)ISO7816.OFFSET_CDATA, (short)(buffer[ISO7816.OFFSET_LC] & 0xFF));
 	}
+
+    void cipherGeneric(APDU apdu, Cipher cipher, short keyLength) {
+        apdu.setIncomingAndReceive();
+        byte[] buffer = apdu.getBuffer();
+        short length = (short) byteToShort(buffer[4]);
+        cipher.doFinal(buffer, (short) 5, (short) length, buffer, (short) 0);
+        apdu.setOutgoingAndSend((short) 0, length);
+    }
 }

@@ -1,11 +1,61 @@
-[21/02/2022 - 22:45:10]: <SYSTEM> ServerChat started
-[21/02/2022 - 22:45:11]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
-[21/02/2022 - 22:45:18]: <SYSTEM> User1 is trying to connect
-[21/02/2022 - 22:45:20]: <SYSTEM> Authentication success
-[21/02/2022 - 22:45:20]: <SYSTEM> [LOGIN]: Connecting User1
-[21/02/2022 - 22:45:20]: <SYSTEM> User1 is now connected!
-[21/02/2022 - 22:45:20]: <SYSTEM> [LIST] [User1]
-[21/02/2022 - 22:45:27]: <SYSTEM> [LOGOUT]: Disconnecting User1
-[21/02/2022 - 22:45:27]: <SYSTEM> User1 is now disconnected!
-[21/02/2022 - 22:45:30]: <SYSTEM> [KILLALL]: All users are logged out
-[21/02/2022 - 22:45:30]: <SYSTEM> [HALT]: secureApp.Server halted
+[22/02/2022 - 01:09:28]: <SYSTEM> ServerChat started
+[22/02/2022 - 01:09:29]: <SYSTEM> [LOADBDD]: Database loaded, registered 8 new users
+[22/02/2022 - 01:09:34]: <SYSTEM> User1 is trying to connect
+[22/02/2022 - 01:09:37]: <SYSTEM> Authentication success
+[22/02/2022 - 01:09:37]: <SYSTEM> [LOGIN]: Connecting User1
+[22/02/2022 - 01:09:37]: <SYSTEM> User1 is now connected!
+[22/02/2022 - 01:09:37]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:09:41]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:09:43]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[22/02/2022 - 01:09:43]: <SYSTEM> User1 is now disconnected!
+[22/02/2022 - 01:11:27]: <SYSTEM> User1 is trying to connect
+[22/02/2022 - 01:11:28]: <SYSTEM> Authentication success
+[22/02/2022 - 01:11:28]: <SYSTEM> [LOGIN]: Connecting User1
+[22/02/2022 - 01:11:28]: <SYSTEM> User1 is now connected!
+[22/02/2022 - 01:11:28]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:11:31]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:11:33]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[22/02/2022 - 01:11:33]: <SYSTEM> User1 is now disconnected!
+[22/02/2022 - 01:16:30]: <SYSTEM> User1 is trying to connect
+[22/02/2022 - 01:16:32]: <SYSTEM> Authentication success
+[22/02/2022 - 01:16:32]: <SYSTEM> [LOGIN]: Connecting User1
+[22/02/2022 - 01:16:32]: <SYSTEM> User1 is now connected!
+[22/02/2022 - 01:16:32]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:16:35]: [User1] Error
+[22/02/2022 - 01:16:36]: [User1] Error
+[22/02/2022 - 01:16:37]: [User1] Error
+[22/02/2022 - 01:16:37]: [User1] Error
+[22/02/2022 - 01:16:38]: [User1] Error
+[22/02/2022 - 01:16:38]: [User1] Error
+[22/02/2022 - 01:16:38]: [User1] Error
+[22/02/2022 - 01:16:38]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:39]: [User1] Error
+[22/02/2022 - 01:16:40]: [User1] Error
+[22/02/2022 - 01:16:40]: [User1] Error
+[22/02/2022 - 01:16:41]: [ADMIN] a
+[22/02/2022 - 01:16:42]: [ADMIN] a
+[22/02/2022 - 01:16:42]: [ADMIN] a
+[22/02/2022 - 01:16:42]: [ADMIN] a
+[22/02/2022 - 01:16:44]: [User1] Error
+[22/02/2022 - 01:16:48]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[22/02/2022 - 01:16:48]: <SYSTEM> User1 is now disconnected!
+[22/02/2022 - 01:20:23]: <SYSTEM> User1 is trying to connect
+[22/02/2022 - 01:20:32]: <SYSTEM> Authentication success
+[22/02/2022 - 01:20:32]: <SYSTEM> [LOGIN]: Connecting User1
+[22/02/2022 - 01:20:32]: <SYSTEM> User1 is now connected!
+[22/02/2022 - 01:20:32]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:20:36]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[22/02/2022 - 01:20:36]: <SYSTEM> User1 is now disconnected!
+[22/02/2022 - 01:26:06]: <SYSTEM> User1 is trying to connect
+[22/02/2022 - 01:26:08]: <SYSTEM> Authentication success
+[22/02/2022 - 01:26:08]: <SYSTEM> [LOGIN]: Connecting User1
+[22/02/2022 - 01:26:08]: <SYSTEM> User1 is now connected!
+[22/02/2022 - 01:26:08]: <SYSTEM> [LIST] [User1]
+[22/02/2022 - 01:26:12]: <SYSTEM> [LOGOUT]: Disconnecting User1
+[22/02/2022 - 01:26:12]: <SYSTEM> User1 is now disconnected!

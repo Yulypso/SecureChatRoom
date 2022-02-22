@@ -30,6 +30,8 @@ public class TheClient extends Thread {
 	private static final int MSG = 0; // msg
 	private static final int SENDFILE = 1; // sendFile login filename
 	private static final int LOGOUT = 2; // /logout or /exit
+	private static final int LIST = 15;
+	private static final int PRIVMSG = 16;
 
 	// secureApp.Server command
 	private static final int CONNECTED = 3;
@@ -55,8 +57,12 @@ public class TheClient extends Thread {
 	private static final byte CLA = (byte) 0x90;
 	private static final byte P1 = (byte) 0x00;
 	private static final byte P2 = (byte) 0x00;
-	private static final byte INS_RSA_ENCRYPT             = (byte)0xA0;
-	private static final byte INS_RSA_DECRYPT             = (byte)0xA2;
+	private static final byte INS_RSA_ENCRYPT = (byte) 0xA0;
+	private static final byte INS_RSA_DECRYPT = (byte) 0xA2;
+
+	private static short DMS_DES = 248; // DATA MAX SIZE for DES
+    private static final byte INS_DES_DECRYPT = (byte) 0xB0;
+    private static final byte INS_DES_ENCRYPT = (byte) 0xB2;
 
     public TheClient(String host, int port) throws IOException {
 		initStream(host, port);
@@ -69,18 +75,18 @@ public class TheClient extends Thread {
 	    return sendAPDU(cmd, true);
     }
 
-    private ResponseAPDU sendAPDU( CommandAPDU cmd, boolean display ) {
-	    ResponseAPDU result = null;
-	    try {
-		result = this.servClient.sendCommandAPDU( cmd );
-		if(display)
-			displayAPDU(cmd, result);
-	    } catch( Exception e ) {
-           	 System.out.println( "Exception caught in sendAPDU: " + e.getMessage() );
-           	 java.lang.System.exit( -1 );
-            }
-	    return result;
-    }
+	private ResponseAPDU sendAPDU(CommandAPDU cmd, boolean display) {
+		ResponseAPDU result = null;
+		try {
+			result = this.servClient.sendCommandAPDU(cmd);
+			if (display)
+				displayAPDU(cmd, result);
+		} catch (Exception e) {
+			System.out.println("Exception caught in sendAPDU: " + e.getMessage());
+			java.lang.System.exit(-1);
+		}
+		return result;
+	}
 
 
     /************************************************
@@ -241,6 +247,44 @@ public class TheClient extends Thread {
 		}
 		return r;
 	}
+
+	private static short byteToShort(byte b) {
+		return (short) (b & 0xff);
+	}
+
+	private static short byteArrayToShort(byte[] ba, short offset) {
+		return (short) (((ba[offset] << 8)) | ((ba[(short) (offset + 1)] & 0xff)));
+	}
+
+	private static byte[] addPadding(byte[] data, long fileLength) {
+		short paddingSize = (short) (8 - (fileLength % 8));
+		byte[] paddingData = new byte[(short) (data.length + paddingSize)];
+
+		System.arraycopy(data, 0, paddingData, 0, (short) data.length);
+		for (short i = (short) data.length; i < (data.length + paddingSize); ++i)
+			paddingData[i] = shortToByteArray(paddingSize)[1];
+
+		return paddingData;
+	}
+
+	private static byte[] removePadding(byte[] paddingData) {
+		short paddingSize = byteToShort(paddingData[paddingData.length - 1]);
+		if (paddingSize > 8)
+			return paddingData;
+
+		/* check if padding exists */
+		for (short i = (short) (paddingData.length - paddingSize); i < paddingData.length; ++i)
+			if (paddingData[i] != (byte) paddingSize)
+				return paddingData;
+
+		/* Remove padding */
+		short dataLength = (short) (paddingData.length - paddingSize);
+		byte[] data = new byte[dataLength];
+		System.arraycopy(paddingData, 0, data, 0, (short) dataLength);
+
+		return data;
+	}
+
 	/*********/
 
 	private boolean isUserconnected(String raw){
@@ -434,6 +478,73 @@ public class TheClient extends Thread {
 		}
 	}
 
+	private synchronized String encryptMsgB64(String raw) {
+		CommandAPDU cmd;
+		ResponseAPDU resp;
+
+		byte[] bytes = raw.getBytes();
+		int remainingBytes = bytes.length;
+		byte[] res = new byte[remainingBytes];
+
+		short i = 0;
+		while (remainingBytes > DMS_DES) {
+			System.out.println("in while loop ");
+			byte[] data = new byte[DMS_DES];
+			System.arraycopy(bytes, i * DMS_DES, data, 0, DMS_DES);
+
+			byte[] payload = new byte[DMS_DES + 6];
+			payload[0] = CLA;
+			payload[1] = INS_DES_ENCRYPT;
+			payload[2] = P1;
+			payload[3] = P2;
+			payload[4] = (byte) DMS_DES;
+			System.arraycopy(data, 0, payload, 5, DMS_DES);
+			payload[payload.length - 1] = (byte) DMS_DES;
+			
+			cmd = new CommandAPDU(payload);
+			resp = this.sendAPDU(cmd, DISPLAY);
+
+			if (getExceptionMessage("DES ENCRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+				byte[] b = resp.getBytes();
+				System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
+				++i; remainingBytes -= DMS_DES;
+			}
+		}
+
+		System.out.println("end while loop ");
+		byte[] data = new byte[remainingBytes];
+		System.arraycopy(bytes, i * DMS_DES, data, 0, remainingBytes);
+
+		System.out.println("before add padding ");
+		data = addPadding(data, raw.getBytes().length);
+		System.out.println("after add padding ");
+
+		byte[] payload = new byte[data.length + 6];
+		payload[0] = CLA;
+		payload[1] = INS_DES_ENCRYPT;
+		payload[2] = P1;
+		payload[3] = P2;
+		payload[4] = (byte) data.length;
+		System.arraycopy(data, 0, payload, 5, data.length);
+		payload[payload.length - 1] = (byte) data.length;
+		
+		cmd = new CommandAPDU(payload);
+		displayAPDU(cmd);
+
+		System.out.println("before send apdu");
+		resp = this.sendAPDU(cmd, DISPLAY);
+		System.out.println("after send apdu"); // TODO: GIGA BUG
+
+		if (getExceptionMessage("DES ENCRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
+			byte[] b = resp.getBytes();
+			System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
+			BASE64Encoder encoder = new BASE64Encoder();
+			return encoder.encode(res);
+		}
+
+		return "Error";
+	}
+
 	/*********/
 
 	private int serverParser(String text){
@@ -485,6 +596,10 @@ public class TheClient extends Thread {
 			return isClientConnected ? SENDFILE : MSG;
 		else if(command.equals("/exit") || command.equals("/logout"))
 			return isClientConnected ? LOGOUT : MSG;
+		else if(command.equals("/list"))
+			return isClientConnected ? LIST : MSG;
+		else if(command.equals("/msg"))
+			return isClientConnected ? PRIVMSG : MSG;
 		else
 			return MSG;
 	}
@@ -493,15 +608,11 @@ public class TheClient extends Thread {
 		while(this.inConsole.hasNextLine()){
 			String raw = this.inConsole.nextLine().trim();
 			switch (commandParser(raw)) {
-				case SENDFILE:
-					sendFile(raw);
-					break;
-				case MSG:
-					sendServer(raw);
-					break;
-				case LOGOUT:
-					logout();
-					break;
+				case SENDFILE: sendFile(raw); break;
+				case MSG: sendServer(encryptMsgB64(raw)); break;
+				case LIST: sendServer(raw); break;
+				case PRIVMSG: sendServer(raw); break;
+				case LOGOUT: logout(); break;
 			}
 		}
 	}
