@@ -19,6 +19,10 @@ if errorlevel 1 goto error
 echo %SERVER%.class compiled: OK
 echo .
 
+IF NOT EXIST %OUT%\%PROJECT%\%PKGSERVER%\Databases MD %OUT%\%PROJECT%\%PKGSERVER%\Databases
+
+IF NOT EXIST %OUT%\%PROJECT%\%PKGSERVER%\Logs MD %OUT%\%PROJECT%\%PKGSERVER%\Logs
+
 goto end
 
 :error

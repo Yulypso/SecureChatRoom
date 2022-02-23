@@ -322,7 +322,7 @@ public class TheClient extends Thread {
 			if (this.isReceiverConnected) {
 				String[] splitRaw = raw.split(" ");
 				if (splitRaw.length == 8) {
-					File f = new File("../src/secureApp/client/Files/" + splitRaw[7].trim());
+					File f = new File("../out/secureApp/client/Files/" + splitRaw[7].trim());
 					if (!f.exists()) {
 						displayConsole("<SYSTEM> [SENDFILE]: File doesn't exist");
 					} else {
@@ -357,14 +357,13 @@ public class TheClient extends Thread {
 	private synchronized void retrieveFile(String raw) throws IOException {
 		if(raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTART")){
 			String[] splitRaw = raw.split(" ");
-			this.fout = new FileOutputStream("../src/secureApp/client/Files/retrieved_" + splitRaw[4]);
+			this.fout = new FileOutputStream("../out/secureApp/client/Files/retrieved_" + splitRaw[4]);
 		} else if (raw.startsWith("<SYSTEM> [SENDFILE]: SENDFILESTOP")) {
 			this.fileTransferMode = false;
 			this.fout.close();
 		} else {
 			if (raw.startsWith("<SYSTEM> [SENDFILE]")) {
 				String[] byteValue = raw.split(" ")[2].split(";");
-				System.out.println(byteValue.length);
 				for (int i = 0; i < byteValue.length -1; ++i)
 					this.fout.write(Byte.parseByte(String.valueOf(shortToByteArray(Short.parseShort(byteValue[i]))[1]), 10));
 			} else
@@ -471,7 +470,6 @@ public class TheClient extends Thread {
 			displayBytes(data);
 
 			BASE64Encoder encoder = new BASE64Encoder();
-			//System.out.println("Unciphered by card is:\n" + encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "") + "\n");
 			return encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "");
 		} else
 			return "Error"; 

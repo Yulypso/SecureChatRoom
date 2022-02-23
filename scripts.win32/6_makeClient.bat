@@ -21,6 +21,8 @@ if errorlevel 1 goto error
 echo %CLIENT%.class compiled: OK
 echo .
 
+IF NOT EXIST %OUT%\%PROJECT%\%PKGCLIENT%\Files MD %OUT%\%PROJECT%\%PKGCLIENT%\Files
+
 goto end
 
 :error

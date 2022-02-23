@@ -433,7 +433,7 @@ public class ServiceChat implements Runnable {
             return;
         }
 
-        String bddFile = "../src/secureApp/server/Databases/" + raw.split(" ")[1];
+        String bddFile = "../out/secureApp/server/Databases/" + raw.split(" ")[1];
         try {
             new File(bddFile).delete();
 
@@ -456,7 +456,7 @@ public class ServiceChat implements Runnable {
             return;
         }
 
-        String bddFile = "../src/secureApp/server/Databases/" + raw.split(" ")[1];
+        String bddFile = "../out/secureApp/server/Databases/" + raw.split(" ")[1];
         try {
             BufferedReader reader = new BufferedReader(new FileReader(bddFile));
             String line; int cpt = 0;

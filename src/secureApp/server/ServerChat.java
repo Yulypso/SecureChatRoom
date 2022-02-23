@@ -15,7 +15,8 @@ public class ServerChat {
     public ServerChat(final int port){
 
         try {
-            Handler fileHandler = new FileHandler("../src/secureApp/server/Logs/logger.log");
+            //Handler fileHandler = new FileHandler("../src/secureApp/server/Logs/logger.log");
+            Handler fileHandler = new FileHandler("../out/secureApp/server/Logs/logger.log");
             fileHandler.setFormatter(new LoggerFormatter());
             logger.addHandler(fileHandler);
             logger.log(Level.INFO, "<SYSTEM> ServerChat started");

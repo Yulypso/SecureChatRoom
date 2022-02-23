@@ -1,19 +1,21 @@
-[23/02/2022 - 14:52:51]: <SYSTEM> ServerChat started
-[23/02/2022 - 14:53:22]: <SYSTEM> [REGISTER]: Registering Lucy
-[23/02/2022 - 14:53:22]: <SYSTEM> [LOGOUT]: Disconnecting Lucy
-[23/02/2022 - 14:53:22]: <SYSTEM> Lucy is now disconnected!
-[23/02/2022 - 14:53:46]: <SYSTEM> [REGISTER]: Registering lucy
-[23/02/2022 - 14:53:46]: <SYSTEM> [LOGOUT]: Disconnecting lucy
-[23/02/2022 - 14:53:46]: <SYSTEM> lucy is now disconnected!
-[23/02/2022 - 14:54:04]: <SYSTEM> lucy is trying to connect
-[23/02/2022 - 14:54:07]: <SYSTEM> Authentication success
-[23/02/2022 - 14:54:07]: <SYSTEM> [LOGIN]: Connecting lucy
-[23/02/2022 - 14:54:07]: <SYSTEM> lucy is now connected!
-[23/02/2022 - 14:54:07]: <SYSTEM> [LIST] [lucy]
-[23/02/2022 - 14:54:13]: [lucy] P5wJj6UokOw=
-[23/02/2022 - 14:54:38]: [lucy] P5wJj6UokOw=
-[23/02/2022 - 14:54:42]: [lucy] I4xqGWrjnuc=
-[23/02/2022 - 14:54:45]: [lucy] 7xGzt4GrjjQ=
-[23/02/2022 - 14:54:49]: [lucy] oYwrw8I4q70=
-[23/02/2022 - 14:54:57]: <SYSTEM> [LOGOUT]: Disconnecting lucy
-[23/02/2022 - 14:54:57]: <SYSTEM> lucy is now disconnected!
+[23/02/2022 - 15:20:05]: <SYSTEM> ServerChat started
+[23/02/2022 - 15:20:24]: <SYSTEM> [REGISTER]: Registering Yulypso
+[23/02/2022 - 15:20:24]: <SYSTEM> [LOGOUT]: Disconnecting Yulypso
+[23/02/2022 - 15:20:24]: <SYSTEM> Yulypso is now disconnected!
+[23/02/2022 - 15:26:25]: <SYSTEM> Yulypso is trying to connect
+[23/02/2022 - 15:26:34]: <SYSTEM> Authentication success
+[23/02/2022 - 15:26:34]: <SYSTEM> [LOGIN]: Connecting Yulypso
+[23/02/2022 - 15:26:34]: <SYSTEM> Yulypso is now connected!
+[23/02/2022 - 15:26:34]: <SYSTEM> [LIST] [Yulypso]
+[23/02/2022 - 15:30:14]: [Yulypso] SeV3rG37QRpJvKuKX16JqtSlDKO25pdiQw0Wlhsh/1A=
+[23/02/2022 - 15:36:24]: <SYSTEM> [SENDFILE] [Yulypso]: Sending cafe.png to user Yulypso
+[23/02/2022 - 15:36:37]: <SYSTEM> [SENDFILE] [Yulypso]: File Sent
+[23/02/2022 - 15:41:18]: [Yulypso] kQwOmLyujpk=
+[23/02/2022 - 15:47:55]: [ADMIN] //halt
+[23/02/2022 - 15:47:58]: <SYSTEM> [KILLALL]: Disconnecting Yulypso (1/1)
+[23/02/2022 - 15:47:58]: <SYSTEM> [LOGOUT]: Disconnecting Yulypso
+[23/02/2022 - 15:47:58]: <SYSTEM> Yulypso is now disconnected!
+[23/02/2022 - 15:47:58]: <SYSTEM> [KILLALL]: All users are logged out
+[23/02/2022 - 15:47:58]: <SYSTEM> [LOGOUT]: Disconnecting Yulypso
+[23/02/2022 - 15:47:58]: <SYSTEM> [HALT]: secureApp.Server halted
+[23/02/2022 - 15:47:58]: <SYSTEM> Yulypso is now disconnected!
