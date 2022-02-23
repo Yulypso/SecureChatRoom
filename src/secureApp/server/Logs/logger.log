@@ -1,4 +1,37 @@
-[22/02/2022 - 16:44:16]: <SYSTEM> ServerChat started
-[22/02/2022 - 16:44:24]: <SYSTEM> [LOADBDD]: Database loaded, registered 5 new users
-[22/02/2022 - 16:44:26]: <SYSTEM> [KILLALL]: All users are logged out
-[22/02/2022 - 16:44:26]: <SYSTEM> [HALT]: secureApp.Server halted
+[23/02/2022 - 10:33:23]: <SYSTEM> ServerChat started
+[23/02/2022 - 10:33:31]: <SYSTEM> [REGISTER]: Registering Yulypso
+[23/02/2022 - 10:33:31]: <SYSTEM> [LOGOUT]: Disconnecting Yulypso
+[23/02/2022 - 10:33:31]: <SYSTEM> Yulypso is now disconnected!
+[23/02/2022 - 10:33:38]: <SYSTEM> [LOGIN]: Connecting Yulypso
+[23/02/2022 - 10:33:38]: <SYSTEM> Yulypso is now connected!
+[23/02/2022 - 10:33:38]: <SYSTEM> [LIST] [Yulypso]
+[23/02/2022 - 10:33:38]: [Yulypso] 
+[23/02/2022 - 10:33:39]: [Yulypso] aa
+[23/02/2022 - 10:33:39]: [Yulypso] a
+[23/02/2022 - 10:33:40]: [Yulypso] a
+[23/02/2022 - 10:33:41]: [Yulypso] hi
+[23/02/2022 - 10:33:46]: <SYSTEM> [SENDFILE] [Yulypso]: Sending cafe.png to user Yulypso
+[23/02/2022 - 10:33:49]: <SYSTEM> [SENDFILE] [Yulypso]: File Sent
+[23/02/2022 - 10:33:50]: [ADMIN] great
+[23/02/2022 - 10:33:54]: [Yulypso] nice
+[23/02/2022 - 10:33:58]: <SYSTEM> [SENDFILE] [Yulypso]: Sending cafe.png to user Yulypso
+[23/02/2022 - 10:33:58]: [Yulypso] a
+[23/02/2022 - 10:33:58]: [Yulypso] a
+[23/02/2022 - 10:33:58]: [Yulypso] a
+[23/02/2022 - 10:33:58]: [Yulypso] 
+[23/02/2022 - 10:33:58]: [Yulypso] aa
+[23/02/2022 - 10:33:59]: [Yulypso] a
+[23/02/2022 - 10:34:00]: [ADMIN] a
+[23/02/2022 - 10:34:00]: [ADMIN] a
+[23/02/2022 - 10:34:00]: [ADMIN] a
+[23/02/2022 - 10:34:00]: [ADMIN] 
+[23/02/2022 - 10:34:00]: <SYSTEM> [SENDFILE] [Yulypso]: File Sent
+[23/02/2022 - 10:34:00]: [ADMIN] a
+[23/02/2022 - 10:34:00]: [ADMIN] a
+[23/02/2022 - 10:34:02]: [Yulypso] 
+[23/02/2022 - 10:34:13]: <SYSTEM> [LIST] [Yulypso]
+[23/02/2022 - 10:34:16]: <SYSTEM> [LOGOUT]: Disconnecting Yulypso
+[23/02/2022 - 10:34:16]: <SYSTEM> Yulypso is now disconnected!
+[23/02/2022 - 10:34:19]: [ADMIN] 
+[23/02/2022 - 10:34:23]: <SYSTEM> [KILLALL]: All users are logged out
+[23/02/2022 - 10:34:23]: <SYSTEM> [HALT]: secureApp.Server halted

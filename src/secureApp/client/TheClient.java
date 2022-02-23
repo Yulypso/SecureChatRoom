@@ -18,6 +18,7 @@ import sun.misc.BASE64Decoder;
 
 public class TheClient extends Thread {
 
+	private static final boolean JAVACARDMODE = true;
     private PassThruCardService servClient = null;
     boolean DISPLAY = true;
 
@@ -53,6 +54,7 @@ public class TheClient extends Thread {
 	private boolean checkReceiverState = false;
 
 	private FileOutputStream fout = null;
+	private static final int DMS_SENDFILE = 100000;
 
 	private static final byte CLA = (byte) 0x90;
 	private static final byte P1 = (byte) 0x00;
@@ -68,7 +70,10 @@ public class TheClient extends Thread {
 
     public TheClient(String host, int port) throws IOException {
 		initStream(host, port);
-		authentication();
+		if (JAVACARDMODE)
+			cardAuthentication();
+		else
+			authentication();
 		start();
 		listenConsole();
     }
@@ -311,7 +316,6 @@ public class TheClient extends Thread {
 
 	/* Features */
 	private void sendFile(String raw) throws IOException {
-		System.out.println("sendFile(): " + raw);
 		if(!checkReceiverState){
 			this.checkReceiverState = isUserconnected(raw);
 		} else {
@@ -324,10 +328,21 @@ public class TheClient extends Thread {
 					} else {
 						sendServer("/sendfile " + splitRaw[5] + " " + splitRaw[7]);
 						FileInputStream fin = new FileInputStream(f);
-						int by = 0;
-						while ((by = fin.read()) != -1) {
-							sendServer(String.valueOf(by));
-						}		
+						int by = 0; int i = 0;
+						StringBuilder sb = new StringBuilder();
+						while (by != -1) {
+							by = fin.read(); ++i;
+							sb.append(String.valueOf(by)+";");
+
+							if (by != -1 && i == DMS_SENDFILE) {
+								sendServer("<SYSTEM> [SENDFILE] " + sb.toString());
+								i = 0;
+								sb = new StringBuilder();
+							}
+							else if (by == -1 && i > 1)
+								sendServer("<SYSTEM> [SENDFILE] " + sb.toString());		
+						}
+						
 						sendServer("<SYSTEM> [SENDFILE]: " + "SENDFILESTOP");
 					}
 
@@ -347,7 +362,13 @@ public class TheClient extends Thread {
 			this.fileTransferMode = false;
 			this.fout.close();
 		} else {
-			this.fout.write(Byte.parseByte(String.valueOf(shortToByteArray(Short.parseShort(raw))[1]), 10));
+			if (raw.startsWith("<SYSTEM> [SENDFILE]")) {
+				String[] byteValue = raw.split(" ")[2].split(";");
+				System.out.println(byteValue.length);
+				for (int i = 0; i < byteValue.length -1; ++i)
+					this.fout.write(Byte.parseByte(String.valueOf(shortToByteArray(Short.parseShort(byteValue[i]))[1]), 10));
+			} else
+				displayConsole(raw);
 		}
 	}
 
@@ -355,7 +376,7 @@ public class TheClient extends Thread {
 		sendServer("/logout");
 	}
 
-	/*private void authentication() throws IOException {
+	private void authentication() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			displayConsole(raw);
@@ -371,7 +392,7 @@ public class TheClient extends Thread {
 				return;
 			}
 		}
-	}*/
+	}
 
 	private boolean initNewCard(SmartCard card) {
 		if( card != null )
@@ -401,14 +422,8 @@ public class TheClient extends Thread {
 	}
 
 	private byte[] sendAndRetrieveChallengeApplet(byte[] challengeBytes) {
-		// Send encrypted
 		CommandAPDU cmd;
 		ResponseAPDU resp;
-
-		/* APDU
-		*	CLA	INS	P1	P2	LC	DATA
-		*	0	1	2	3	4	5
-		*/
 
 		int LC = challengeBytes.length;
 		byte[] DATA = challengeBytes;
@@ -429,9 +444,6 @@ public class TheClient extends Thread {
 			byte[] bytes = resp.getBytes();
 			byte[] data = new byte[bytes.length - 2];
 			System.arraycopy(bytes, 0, data, 0, bytes.length - 2);
-		
-			//BASE64Encoder encoder = new BASE64Encoder();
-			//System.out.println("Unciphered by card is:\n" + encoder.encode(data).trim().replaceAll("\n", "").replaceAll("\r", "") + "\n");
 			return data;
 		} else
 			return new byte[] {(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff,(byte)0xff}; 
@@ -480,11 +492,11 @@ public class TheClient extends Thread {
 		resp = this.sendAPDU(cmd, DISPLAY);
 
 		if (!getExceptionMessage("GENERATE RSA KEY ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
-			System.out.println("Error");
+			System.out.println("GENERATE RSA KEY Error");
 		} 
 	}
 
-	private void authentication() throws IOException {
+	private void cardAuthentication() throws IOException {
 		while(this.inNetwork.hasNextLine()) {
 			String raw = this.inNetwork.nextLine().trim();
 			
@@ -537,7 +549,6 @@ public class TheClient extends Thread {
 				   
 					if(this.initNewCard(sm)) {
 						try {
-							/* Challenge section */
 							BASE64Encoder encoder = new BASE64Encoder();
 							String challengeBytesUncipheredB64 = encoder.encode(sendAndRetrieveChallengeApplet(challengeBytes)).trim().replaceAll("\n", "").replaceAll("\r", "");
 							sendServer("<SYSTEM> AUTHENTICATION SOLVED " + challengeBytesUncipheredB64);
@@ -622,9 +633,6 @@ public class TheClient extends Thread {
 	}
 
 	private synchronized String decryptMsgB64(String raw) throws IOException {
-
-		System.out.println("DEBUG [" + raw + "]");
-
 		CommandAPDU cmd;
 		ResponseAPDU resp;
 
@@ -677,9 +685,7 @@ public class TheClient extends Thread {
 		if (getExceptionMessage("DES DECRYPT ", this.apdu2string(resp).trim().substring(this.apdu2string(resp).trim().length() - 5))) {
 			byte[] b = resp.getBytes();
 			System.arraycopy(b, 0, res, i * DMS_DES, b.length - 2);
-
-			res = removePadding(res);
-			return splitRaw[0] + " " + new String(res);
+			return splitRaw[0] + " " + new String(removePadding(res));
 		}
 		return "Error";
 	}
@@ -724,7 +730,7 @@ public class TheClient extends Thread {
 					break;
 				default:
 					if (!this.fileTransferMode){
-						if(!raw.startsWith("<SYSTEM>") && !raw.startsWith("-") && !raw.startsWith("<") && raw.split(" ").length > 1 && !raw.startsWith("[ADMIN]"))
+						if(!raw.startsWith("<SYSTEM>") && !raw.startsWith("-") && !raw.startsWith("<") && raw.split(" ").length > 1 && !raw.startsWith("[ADMIN]") && JAVACARDMODE)
 							raw = decryptMsgB64(raw);
 						displayConsole(raw);
 					}
@@ -754,7 +760,7 @@ public class TheClient extends Thread {
 			String raw = this.inConsole.nextLine().trim();
 			switch (commandParser(raw)) {
 				case SENDFILE: sendFile(raw); break;
-				case MSG: sendServer(encryptMsgB64(raw)); break;
+				case MSG: if (JAVACARDMODE) sendServer(encryptMsgB64(raw)); else sendServer(raw); break;
 				case LIST: sendServer(raw); break;
 				case PRIVMSG: sendServer(raw); break;
 				case LOGOUT: logout(); break;

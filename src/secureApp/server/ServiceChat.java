@@ -29,8 +29,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class ServiceChat implements Runnable {
 
-    private Socket socket;
+    private static final boolean JAVACARDMODE = true;
 
+    private Socket socket;
     private Client client;
     private final Scanner in;
 
@@ -62,7 +63,6 @@ public class ServiceChat implements Runnable {
 
     private KeyFactory factory;
 	private PublicKey pub;
-	//private PrivateKey priv;
     private final int DATASIZE = 128;	
     
 
@@ -79,7 +79,7 @@ public class ServiceChat implements Runnable {
         this.client = new Client(new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true));
 
         // development purpose
-        // loadBdd("/loadbdd users.db");
+        //loadBdd("/loadbdd users.db");
     }
 
     private synchronized void generateRSAKeys(Client client) throws Exception {
@@ -163,7 +163,7 @@ public class ServiceChat implements Runnable {
         return exist;
     }
 
-    /*private synchronized boolean authentication() throws IOException {
+    private synchronized boolean authentication() throws IOException {
         this.client.getOut().println("<SYSTEM> Welcome!");
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
@@ -182,7 +182,7 @@ public class ServiceChat implements Runnable {
             logout(this.client);
             return false;
         }
-    }*/
+    }
 
     private byte[] generateChallenge() throws Exception {
 		Random r = new Random((new Date()).getTime());
@@ -279,8 +279,7 @@ public class ServiceChat implements Runnable {
         return false;
     }
 
-
-    private synchronized boolean authentication() throws IOException {
+    private synchronized boolean cardAuthentication() throws IOException {
         this.client.getOut().println("<SYSTEM> Welcome!");
         this.client.getOut().println("<SYSTEM> Enter your username");
         String username = this.in.nextLine().trim();
@@ -298,7 +297,6 @@ public class ServiceChat implements Runnable {
             return false;
         }
     }
-
 
     private synchronized void cardRegister(String username) throws IOException {
         this.client.getOut().println("<SYSTEM> Register");
@@ -386,7 +384,6 @@ public class ServiceChat implements Runnable {
             }
         }
     }
-
 
     private synchronized void logout(Client client) throws IOException {
         connectedClients.remove(client.getUsername());
@@ -568,7 +565,10 @@ public class ServiceChat implements Runnable {
                 ServerChat.logger.log(Level.INFO, "<SYSTEM> [SENDFILE] [" + this.client.getUsername() + "]: File Sent");
                 this.fileTransferMode = false;
             } else {
-                this.outRetrievingClient.println(raw);
+                if (raw.startsWith("<SYSTEM> [SENDFILE]"))
+                    this.outRetrievingClient.println(raw);
+                else
+                    broadcastMessage(this.client.getUsername(), raw, false);
             }
         }
     }
@@ -598,7 +598,7 @@ public class ServiceChat implements Runnable {
     public void run() {
 
         try {
-            if(this.client.isAdmin() || authentication()) {
+            if (this.client.isAdmin() || (JAVACARDMODE && cardAuthentication()) || (!JAVACARDMODE && authentication())) {
                 while (this.in.hasNextLine()) {
                     String raw = this.in.nextLine().trim();
 
