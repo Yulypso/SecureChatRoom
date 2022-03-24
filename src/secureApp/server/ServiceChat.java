@@ -438,7 +438,7 @@ public class ServiceChat implements Runnable {
 
     private synchronized void saveBdd(String raw) {
         if (raw.split(" ").length != 2) {
-            System.out.println("<SYSTEM> Command error");
+            System.out.println("<SYSTEM> Syntax error: Use: /savebdd <database.db>");
             return;
         }
 
@@ -461,7 +461,7 @@ public class ServiceChat implements Runnable {
 
     private synchronized void loadBdd(String raw) {
         if (raw.split(" ").length != 2) {
-            System.out.println("<SYSTEM> Command error");
+            System.out.println("<SYSTEM> Syntax error: Use: /loadbdd <database.db>");
             return;
         }
 
