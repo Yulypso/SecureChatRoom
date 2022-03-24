@@ -289,7 +289,7 @@ public class ServiceChat implements Runnable {
                 cardRegister(username);
                 return false;
             } else {
-                return cardLogin(username); // false = auth KO; true = auth OK``
+                return cardLogin(username); // false = auth KO; true = auth OK
             }
         } else {
             this.client.setUsername("Forbidden username");
@@ -386,13 +386,15 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void logout(Client client) throws IOException {
-        connectedClients.remove(client.getUsername());
-
-        client.getOut().println("<SYSTEM> Disconnecting...");
-        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
-        broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
-        client.getOut().close();
-        client.getSocket().close();
+        for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet())
+            if (client.getUsername().equals(retrievingClient.getKey())) {
+                connectedClients.remove(client.getUsername());
+                client.getOut().println("<SYSTEM> Disconnecting...");
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
+                broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
+                client.getOut().close();
+                client.getSocket().close();
+            }
     }
 
     private synchronized void listClients(){
@@ -405,6 +407,8 @@ public class ServiceChat implements Runnable {
         this.client.getOut().println("\n-----------------------------");
         ServerChat.logger.log(Level.INFO, "<SYSTEM> [LIST] [" + this.client.getUsername() + "]");
     }
+
+
 
     private synchronized void privateMessage(String raw) {
         String[] splitRaw = raw.split(" ");
