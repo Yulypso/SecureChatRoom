@@ -776,6 +776,10 @@ public class TheClient extends Thread {
 	}
 
     public static void main( String[] args ) throws InterruptedException, IOException {
-	    new client.TheClient("localhost", 7777);
+		Scanner s = new Scanner(System.in);
+		System.out.println("Define server address: ");
+		try {
+	    	new client.TheClient(s.nextLine(), 7777);
+		} catch (Exception e) {}
     }
 }
