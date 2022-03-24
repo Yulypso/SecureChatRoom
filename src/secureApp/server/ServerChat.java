@@ -4,6 +4,7 @@ import secureApp.server.Utils.LoggerFormatter;
 
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 import java.util.logging.*;
 
 public class ServerChat {
@@ -13,7 +14,6 @@ public class ServerChat {
     public static final Logger logger = Logger.getLogger(ServiceChat.class.getSimpleName());
 
     public ServerChat(final int port){
-
         try {
             //Handler fileHandler = new FileHandler("../src/secureApp/server/Logs/logger.log");
             Handler fileHandler = new FileHandler("../out/secureApp/server/Logs/logger.log");
@@ -34,6 +34,8 @@ public class ServerChat {
     }
 
     public static void main(String[] argv){
-        new ServerChat(1234);
+        Scanner s = new Scanner(System.in);  
+        System.out.println("Define server port: ");
+        new ServerChat(Integer.parseInt(s.nextLine()));
     }
 }
