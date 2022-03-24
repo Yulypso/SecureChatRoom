@@ -386,15 +386,17 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void logout(Client client) throws IOException {
-        for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet())
-            if (client.getUsername().equals(retrievingClient.getKey())) {
-                connectedClients.remove(client.getUsername());
-                client.getOut().println("<SYSTEM> Disconnecting...");
-                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
-                broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
-                client.getOut().close();
-                client.getSocket().close();
-            }
+        for (Client rc: registeredClients) 
+            if (client.getUsername().equals(rc.getUsername())) 
+                for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet())
+                    if (client.getUsername().equals(retrievingClient.getKey())) {
+                        connectedClients.remove(client.getUsername());
+                        client.getOut().println("<SYSTEM> Disconnecting...");
+                        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
+                        broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
+                        client.getOut().close();
+                        client.getSocket().close();
+                    }
     }
 
     private synchronized void listClients(){
