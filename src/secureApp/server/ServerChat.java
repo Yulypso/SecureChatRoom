@@ -34,8 +34,6 @@ public class ServerChat {
     }
 
     public static void main(String[] argv){
-        Scanner s = new Scanner(System.in);  
-        System.out.println("Define server port: ");
-        new ServerChat(Integer.parseInt(s.nextLine()));
+        new ServerChat(7777);
     }
 }

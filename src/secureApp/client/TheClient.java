@@ -776,8 +776,6 @@ public class TheClient extends Thread {
 	}
 
     public static void main( String[] args ) throws InterruptedException, IOException {
-        Scanner s = new Scanner(System.in);  
-        System.out.println("Define server port: ");
-	    new client.TheClient("localhost", Integer.parseInt(s.nextLine()));
+	    new client.TheClient("localhost", 7777);
     }
 }
