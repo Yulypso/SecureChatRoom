@@ -367,7 +367,7 @@ public class ServiceChat implements Runnable {
         if(!userConnectedLimitReachedCheck()) {
             if (connectedClients.containsKey(username)) {
                 this.client.getOut().println("<SYSTEM> User already connected");
-                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + username + " is already connected");
+                ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGIN]: User " + username + " test is already connected");
                 this.client.getOut().close();
                 this.socket.close();
             } else {
@@ -386,17 +386,20 @@ public class ServiceChat implements Runnable {
     }
 
     private synchronized void logout(Client client) throws IOException {
-        for (Client rc: registeredClients) 
-            if (client.getUsername().equals(rc.getUsername())) 
-                for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet())
-                    if (client.getUsername().equals(retrievingClient.getKey())) {
-                        connectedClients.remove(client.getUsername());
-                        client.getOut().println("<SYSTEM> Disconnecting...");
-                        ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
-                        broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
-                        client.getOut().close();
-                        client.getSocket().close();
-                    }
+        try {
+            for (Client rc: registeredClients) 
+                if (client.getUsername().equals(rc.getUsername())) 
+                    for (Map.Entry<String, PrintWriter> retrievingClient : connectedClients.entrySet())
+                        if (client.getUsername().equals(retrievingClient.getKey())) {
+                            connectedClients.remove(client.getUsername());
+                            client.getOut().println("<SYSTEM> Disconnecting...");
+                            ServerChat.logger.log(Level.INFO, "<SYSTEM> [LOGOUT]: Disconnecting " + client.getUsername());
+                            broadcastMessage("SYSTEM", client.getUsername() + " is now disconnected!", true);
+                            client.getOut().close();
+                            client.getSocket().close();
+                        }
+        } catch (Exception e) {
+        }
     }
 
     private synchronized void listClients(){
