@@ -779,6 +779,7 @@ public class TheClient extends Thread {
 		Scanner s = new Scanner(System.in);
 		System.out.print("Define server address: ");
 		String ip = s.nextLine();
+		System.out.print("Define server port: ");
 		int port = Integer.parseInt(s.nextLine());
 		try {
 	    	new client.TheClient(ip, port);
