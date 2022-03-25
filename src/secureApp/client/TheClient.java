@@ -778,8 +778,10 @@ public class TheClient extends Thread {
     public static void main( String[] args ) throws InterruptedException, IOException {
 		Scanner s = new Scanner(System.in);
 		System.out.print("Define server address: ");
+		String ip = s.nextLine();
+		int port = Integer.parseInt(s.nextLine());
 		try {
-	    	new client.TheClient(s.nextLine(), 7777);
+	    	new client.TheClient(ip, port);
 		} catch (Exception e) {}
     }
 }
