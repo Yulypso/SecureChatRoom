@@ -40,6 +40,8 @@ $ git clone https://github.com/Yulypso/SecureApp.git
 
 ## Run batch files (Windows only)
 
+Run these scripts from 1 to 7 in order to start the secureApp. 
+
 ```sh
 > 1_makeApplet.bat
 > 2_card-deleteApplet.bat
@@ -49,6 +51,8 @@ $ git clone https://github.com/Yulypso/SecureApp.git
 > 6_makeClient.bat
 > 7_runClient.bat
 ```
+
+**Server default port is: 7777**
 
 <br/>
 
