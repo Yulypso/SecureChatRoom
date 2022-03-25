@@ -20,19 +20,18 @@ $ git clone https://github.com/Yulypso/SecureApp.git
 
 ## Required misc
 
-```
-> captransf-1.5
-> java_card_kit-2_2_1
-> OCF1.2
-> pcsc-wrapper-2.0
-> linux
-> jdk1.6
-> apduio-terminal-0.1
-> java_card_kit-2_2_2
-> jdk-17.0.2
-> gpshell-1.4.2
-> java_card_kit-2_1_2
-```
+
+<p align="center" width="100%">
+    <img align="center" src="https://user-images.githubusercontent.com/59794336/160142671-644e380f-57f5-4822-ab57-1b5bf4eca443.png"/>
+</p>
+
+<br/>
+
+**Required JDK:** 
+
+- jdk-17.0.2
+- jdk1.6
+
 
 <br/>
 
